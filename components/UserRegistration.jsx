@@ -28,7 +28,7 @@ export default function UserRegistrationForm({response}) {
         try {
            
             setLoading(true);
-            let response = await http_request.post('/userRegistration', reqdata);
+            let response = await http_request.post('/createCustomer', reqdata);
             let { data } = response;
      
             setLoading(false);

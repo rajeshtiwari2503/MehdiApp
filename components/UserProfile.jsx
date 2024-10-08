@@ -21,7 +21,7 @@ export default function UserProfile(props) {
       </View>
       <View style={styles.profileContainer}>
         <Image source={{ uri: user?.profilePicture }} style={styles.profileImage} />
-        <Text style={styles.name}>{user?.name}</Text>
+        <Text style={styles.name}>{user?.userName}</Text>
         <Text style={styles.email}>{user?.email}</Text>
         {/* <Text style={styles.location}>{user?.address}</Text> */}
         <TouchableOpacity style={styles.editButton} onPress={() => setModalVisible(true)}>
@@ -31,7 +31,7 @@ export default function UserProfile(props) {
       <View style={styles.infoContainer}>
         <View style={styles.infoBox}>
           <Icon name="phone" size={24} color="#3F51B5" />
-          <Text style={styles.infoText}>{user?.contact}</Text>
+          <Text style={styles.infoText}>{user?.contactNo}</Text>
         </View>
         <View style={styles.infoBox}>
           <Icon name="verified-user" size={24} color="#FF9800" />
@@ -41,10 +41,10 @@ export default function UserProfile(props) {
           <Icon name="verified" size={24} color="#3F51B5" />
           <Text style={styles.infoText}>{user?.acceptedTerms?"Term & Condition   Accepted":"Term & Condition not Accepted"}</Text>
         </View>
-        <View style={styles.infoBox}>
+        {/* <View style={styles.infoBox}>
           <Icon name="location-on" size={24} color="#4CAF50" />
           <Text style={styles.infoText}>{user?.address}</Text>
-        </View>
+        </View> */}
       </View>
       <View style={styles.container}>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
