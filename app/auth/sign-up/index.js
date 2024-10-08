@@ -48,25 +48,21 @@ const response=(data)=>{
                         />
                     </View>
                     <View style={styles.tabContainer}>
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        <ScrollView  horizontal showsHorizontalScrollIndicator={false}>
+                            {/* <View style={styles.tabStyle}> */}
                             <TouchableOpacity
                                 style={[styles.tabButton, selectedUserType === 'user' && styles.selectedTab]}
                                 onPress={() => handleUserTypePress('user')}
                             >
-                                <Text style={styles.tabText}>User</Text>
+                                <Text style={styles.tabText}>Customer</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[styles.tabButton, selectedUserType === 'dealer' && styles.selectedTab]}
                                 onPress={() => handleUserTypePress('dealer')}
                             >
-                                <Text style={styles.tabText}>Dealer</Text>
+                                <Text style={styles.tabText}>Service Provider</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity
-                                style={[styles.tabButton, selectedUserType === 'technician' && styles.selectedTab]}
-                                onPress={() => handleUserTypePress('technician')}
-                            >
-                                <Text style={styles.tabText}>Technician</Text>
-                            </TouchableOpacity>
+                            {/* </View> */}
                         </ScrollView>
                     </View>
                     <View style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -137,6 +133,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         overflow: 'hidden',
         display: "flex"
+    },
+    tabStyle:{
+        display:"flex",
+        justifyContent:"space-between"
     },
     tabButton: {
         paddingVertical: 10,

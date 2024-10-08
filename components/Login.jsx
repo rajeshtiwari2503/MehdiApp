@@ -18,7 +18,7 @@ export default function Login() {
             <View style={styles.container}>
                 <View style={styles.txtContainer}>
                     <Text style={styles.title}>
-                        Servsy provide services on Any areas
+                    Discover Stunning Mehndi Designs Tailored for Every Occasion!
                     </Text>
                     <Text style={styles.description}>
                         Delivering comprehensive, customer-focused solutions with innovative and reliable expertise.
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',  // Center text container horizontally
     },
     title: {
-        fontSize: 30,
+        fontSize: 25,
         fontFamily: "outfit-bold",
         textAlign: "center",
         marginTop: 10,
