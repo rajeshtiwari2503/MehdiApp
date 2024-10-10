@@ -23,12 +23,12 @@ export default function DealerRegistrationForm({response}) {
         try {
          
             setLoading(true);
-            let response = await http_request.post('/dealerRegistration', reqdata);
+            let response = await http_request.post('/registration', reqdata);
             let { data } = response;
      
             setLoading(false);
 
-            Toast.show({ type: 'success', text1: data.msg });
+            Toast.show({ type: 'success', text: data.msg });
             router.push("auth/sign-in");
         } catch (err) {
             setLoading(false);

@@ -24,11 +24,11 @@ const EditUserProfile = ({ isVisible, RefreshData,onClose, user, onSave }) => {
   }, [user ]);
 
   const onSubmit = async(data) => {
-    // console.log(data);
+    // console.log(user?._id);
     try {
 
       setLoading(true);
-      const endpoint =   `/editUser/${user._id}`  ;
+      const endpoint =   `/editUser/${user?._id}`  ;
       const response =   await http_request.patch(endpoint, data)  ;
       const { data: responseData } = response;
 

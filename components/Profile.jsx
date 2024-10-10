@@ -64,7 +64,7 @@ export default function Profile() {
         <>
           {userValue?.user?.role === "CUSTOMER" && <UserProfile user={user} RefreshData={RefreshData} handleLogout={handleLogout} />}
           {userValue?.user?.role === "AGENT" && <DealerProfile user={user} RefreshData={RefreshData} handleLogout={handleLogout} />}
-          {userValue?.user?.role === "TECHNICIAN"  && <TechnicianProfile user={user} RefreshData={RefreshData} handleLogout={handleLogout} />}
+          {/* {userValue?.user?.role === "TECHNICIAN"  && <TechnicianProfile user={user} RefreshData={RefreshData} handleLogout={handleLogout} />} */}
           {/* {userValue?.user?.role === "SERVICE"  && <ServiceCenterProfile user={user} RefreshData={RefreshData} handleLogout={handleLogout} />} */}
         </>
       )}
