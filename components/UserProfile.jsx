@@ -37,13 +37,18 @@ export default function UserProfile(props) {
           <Icon name="verified-user" size={24} color="#FF9800" />
           <Text style={styles.infoText}>{user?.verification}</Text>
         </View>
-        <View style={styles.infoBox}>
-          <Icon name="verified" size={24} color="#3F51B5" />
-          <Text style={styles.infoText}>{user?.acceptedTerms?"Term & Condition   Accepted":"Term & Condition not Accepted"}</Text>
-        </View>
+      
         <View style={styles.infoBox}>
           <Icon name="location-on" size={24} color="#4CAF50" />
           <Text style={styles.infoText}>{user?.address}</Text>
+        </View>
+        <View style={styles.infoBox}>
+          <Icon name="verified" size={24} color="#4CAF50" />
+          <Text style={styles.infoText}>{user?.status}</Text>
+        </View>
+        <View style={styles.infoBox}>
+          <Icon name="verified" size={24} color="#3F51B5" />
+          <Text style={styles.infoText}>{user?.acceptedTerms?"Term & Condition   Accepted":"Term & Condition not Accepted"}</Text>
         </View>
       </View>
       <View style={styles.container}>
@@ -91,7 +96,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   header: {
-    backgroundColor: '#6200EE',
+    backgroundColor: '#c8d8e4',
     height: 60,
     flexDirection: 'row',
     alignItems: 'center',
@@ -103,6 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 16,
+    alignItems: 'center',
   },
   profileContainer: {
     alignItems: 'center',

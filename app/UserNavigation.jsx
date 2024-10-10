@@ -49,7 +49,7 @@ const UserNavigator = () => (
         ),
       }}
     />
-    <Tab.Screen 
+    {/* <Tab.Screen 
       name="Products" 
       component={ProductScreen}
       options={{
@@ -105,7 +105,7 @@ const UserNavigator = () => (
           <AntDesign name="questioncircle" size={20} color={color} />
         ),
       }}
-    />
+    /> */}
       <Tab.Screen 
       name="Profile" 
       component={ProfileScreen}

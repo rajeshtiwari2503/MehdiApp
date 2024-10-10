@@ -246,11 +246,11 @@ const DashboardScreen = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#f8f8f8" />
       <View style={styles.container}>
-         {value?.user?.role === "USER" && <UserDashboard dashData={dashData} complaints={complaints} userData={value?.user} notifications={notifications} RefreshData={RefreshData} />}
+         {/* {value?.user?.role === "USER" && <UserDashboard dashData={dashData} complaints={complaints} userData={value?.user} notifications={notifications} RefreshData={RefreshData} />}
         {value?.user?.role === "TECHNICIAN" && <TechnicianDashboard dashData={dashData} complaints={complaints} userData={value?.user} notifications={notifications} RefreshData={RefreshData} />}
         {value?.user?.role === "SERVICE" && <TechnicianDashboard dashData={dashData} complaints={complaints} userData={value?.user} notifications={notifications} RefreshData={RefreshData} />}
-        {value?.user?.role === "DEALER" && <DealerDashboard dashData={dashData} complaints={complaints} userData={value?.user} notifications={notifications} RefreshData={RefreshData} />} 
-        
+        {value?.user?.role === "DEALER" && <DealerDashboard dashData={dashData} complaints={complaints} userData={value?.user} notifications={notifications} RefreshData={RefreshData} />}  */}
+        <Text >Customer</Text>
       </View>
     </SafeAreaView>
   );

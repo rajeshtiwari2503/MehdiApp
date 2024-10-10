@@ -49,7 +49,7 @@ const DealerNavigator = () => (
         ),
       }}
     />
-    <Tab.Screen 
+    {/* <Tab.Screen 
       name="Report" 
       component={ReportScreen}
       options={{
@@ -120,7 +120,7 @@ const DealerNavigator = () => (
           <AntDesign name="questioncircle" size={20} color={color} />
         ),
       }}
-    />
+    /> */}
       <Tab.Screen 
       name="Profile" 
       component={ProfileScreen}

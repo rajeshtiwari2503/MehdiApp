@@ -19,7 +19,20 @@ const AppNavigator = () => {
     'outfit-bold': require('../assets/fonts/Outfit-Bold.ttf'),
   });
 
+ 
+
+ 
+
   useEffect(() => {
+    async function prepare() {
+      if (!fontsLoaded) {
+        await SplashScreen.preventAutoHideAsync(); // Keep splash screen visible
+      } else {
+        await SplashScreen.hideAsync(); // Hide splash screen when fonts are loaded
+      }
+    
+    }
+    prepare();
     const checkUser = async () => {
       try {
         const userData = await AsyncStorage.getItem('user');
@@ -34,17 +47,16 @@ const AppNavigator = () => {
     };
 
     checkUser();
-  }, []);
+  }, [fontsLoaded]);
 
- 
-
-  if (loading) {
+  if (loading || !fontsLoaded) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   }
+console.log(user);
 
   return (
     <>
@@ -63,17 +75,13 @@ const AppNavigator = () => {
         }}>
           {user ? (
             <>
-              {user?.user?.role === 'USER' && <Stack.Screen name="User" component={UserNavigator} />}
-              {user?.user?.role === 'DEALER' && <Stack.Screen name="Dealer" component={DealerNavigator} />}
-              {user?.user?.role === 'TECHNICIAN' && <Stack.Screen name="Technician" component={TechnicianNavigator} />}
-              {/* {user?.user?.role === 'SERVICE' && user?.user?.serviceCenterType === 'Independent' && (
-              <Stack.Screen name="Technician" component={TechnicianNavigator} />
-            )} */}
-              {user?.user?.role === 'SERVICE' && <Stack.Screen name="RoleSelection" component={Login} />}
-              {user?.user?.role === 'BRAND' && <Stack.Screen name="RoleSelection" component={Login} />}
-              {user?.user?.role === 'ADMIN' && <Stack.Screen name="RoleSelection" component={Login} />}
+              {user?.user?.role === 'CUSTOMER' && <Stack.Screen name="User" component={UserNavigator} />}
+              {user?.user?.role === 'AGENT' && <Stack.Screen name="Dealer" component={DealerNavigator} />}
+           
+              {user?.user?.role === undefined && <Stack.Screen name="RoleSelection" component={Login} />}
+             
               
-              {/* Add more roles and components as needed */}
+      
             </>
           ) : (
             <Stack.Screen name="RoleSelection" component={Login} />
