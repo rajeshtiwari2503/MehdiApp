@@ -250,7 +250,7 @@ const DashboardScreen = () => {
         {value?.user?.role === "TECHNICIAN" && <TechnicianDashboard dashData={dashData} complaints={complaints} userData={value?.user} notifications={notifications} RefreshData={RefreshData} />}
         {value?.user?.role === "SERVICE" && <TechnicianDashboard dashData={dashData} complaints={complaints} userData={value?.user} notifications={notifications} RefreshData={RefreshData} />}
         {value?.user?.role === "DEALER" && <DealerDashboard dashData={dashData} complaints={complaints} userData={value?.user} notifications={notifications} RefreshData={RefreshData} />}  */}
-        <Text >Customer</Text>
+        <Text >{value?.user?.name}  {value?.user?.role}</Text>
       </View>
     </SafeAreaView>
   );

@@ -22,8 +22,10 @@ export default function DealerRegistrationForm({response}) {
     const Register = async (reqdata) => {
         try {
          
+         const userData={...reqdata,role:"AGENT"}
+        //  console.log(userData);
             setLoading(true);
-            let response = await http_request.post('/registration', reqdata);
+            let response = await http_request.post('/registration', userData);
             let { data } = response;
      
             setLoading(false);
@@ -110,7 +112,7 @@ export default function DealerRegistrationForm({response}) {
                     />
                     {errors.contact && <Text style={styles.errorText}>{errors.contact.message}</Text>}
                 </View>
-                <View style={styles.inputContainer}>
+                {/* <View style={styles.inputContainer}>
                 <Text style={styles.label}>Business Registration Number</Text>
                 <Controller
                     control={control}
@@ -152,12 +154,12 @@ export default function DealerRegistrationForm({response}) {
                     )}
                 />
                 {errors.gstVatNumber && <Text style={styles.errorText}>{errors.gstVatNumber.message}</Text>}
-            </View>
+            </View> */}
             <View style={styles.inputContainer}>
                     <Text style={styles.label}>Address</Text>
                     <Controller
                         control={control}
-                        name="businessAddress"
+                        name="address"
                         rules={{
                             required: 'Address is required',
                             minLength: { value: 10, message: 'Address must be at least 10 characters long' }
@@ -172,9 +174,9 @@ export default function DealerRegistrationForm({response}) {
                             />
                         )}
                     />
-                    {errors.businessAddress && <Text style={styles.errorText}>{errors.businessAddress.message}</Text>}
+                    {errors.address && <Text style={styles.errorText}>{errors.address.message}</Text>}
                 </View>
-                <View style={styles.inputContainer}>
+                {/* <View style={styles.inputContainer}>
                     <Text style={styles.label}>Contact Person</Text>
                     <Controller
                         control={control}
@@ -194,7 +196,7 @@ export default function DealerRegistrationForm({response}) {
                         )}
                     />
                     {errors.contactPerson && <Text style={styles.errorText}>{errors.contactPerson.message}</Text>}
-                </View>
+                </View> */}
                 <View style={styles.inputContainer}>
                     <Text style={styles.label}>Password</Text>
                     <Controller
