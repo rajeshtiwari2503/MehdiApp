@@ -26,9 +26,9 @@ export default function UserRegistrationForm({response}) {
 
     const Register = async (reqdata) => {
         try {
-           
+            const userData={...reqdata,role:"CUSTOMER"}
             setLoading(true);
-            let response = await http_request.post('/registration', reqdata);
+            let response = await http_request.post('/registration', userData);
             let { data } = response;
      
             setLoading(false);
