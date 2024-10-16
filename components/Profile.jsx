@@ -4,9 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import http_request from "../http_request";
 import UserProfile from './UserProfile';
-import TechnicianProfile from './TechnicianProfile';
-import DealerProfile from './DealerProfile';
-// import ServiceCenterProfile from './ServiceCenterProfile';
+ 
+ 
 
 export default function Profile() {
 
