@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import UserNavigator from './UserNavigation';
 import DealerNavigator from './DealerNavigation';
-import TechnicianNavigator from './TechnicianNavigation';
+ 
 import Login from "../components/Login";
 import { useFonts } from 'expo-font';
 const Stack = createNativeStackNavigator();

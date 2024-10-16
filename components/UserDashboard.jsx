@@ -48,14 +48,14 @@ const UserDashboard = () => {
   };
 
   const tab = [
-    { name: "Track Location", icon: "location-outline", type: "Ionicons" },
-    { name: "Order", icon: "shopping-cart", type: "MaterialIcons" },
-    { name: "Group Order", icon: "group", type: "FontAwesome" },
-    { name: "Mehndi Design", icon: "brush", type: "MaterialIcons" },
-    { name: "Offer & Discount", icon: "pricetag", type: "Ionicons" },
-    { name: "Helpline & Chat", icon: "chatbox-ellipses", type: "Ionicons" }
+    { name: "Track Location", icon: "location-outline", type: "Ionicons", bgColor: "#1abc9c" },
+    { name: "Order", icon: "shopping-cart", type: "MaterialIcons", bgColor: "#e74c3c" },
+    { name: "Group Order", icon: "group", type: "FontAwesome", bgColor: "#3498db" },
+    { name: "Mehndi Design", icon: "brush", type: "MaterialIcons", bgColor: "#f39c12" },
+    { name: "Offer & Discount", icon: "pricetag", type: "Ionicons", bgColor: "#9b59b6" },
+    { name: "Helpline & Chat", icon: "chatbox-ellipses", type: "Ionicons", bgColor: "#34495e" }
   ];
-  return (
+    return (
     
     
       <ScrollView   >
@@ -116,7 +116,8 @@ const UserDashboard = () => {
                 <View key={index} style={styles.itemContainer}>
                   <TouchableOpacity
                     // onPress={() => navigation.navigate('Products')}
-                    style={styles.button}
+                    style={[styles.button, { backgroundColor: item.bgColor }]}
+             
                     activeOpacity={0.7}
                   >
                     <View style={styles.iconContainer}>

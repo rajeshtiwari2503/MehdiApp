@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Smehndi",
+    "name": "S Mehndi",
     "slug": "mehdiApp",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -20,6 +20,8 @@
         "foregroundImage": "./assets/images/Logo.png",
         "backgroundColor": "#ffffff"
       },
+      "enableProguardInReleaseBuilds": true,
+      "useProguard": true,
       "package": "com.rajeshtiwari2503.mehdiApp"
     },
     "web": {

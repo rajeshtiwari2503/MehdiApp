@@ -2,8 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign, Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import DashboardScreen from '../screens/DashboardScreen';
-import ServiceScreen from '../screens/ServiceScreen';
-import ProductScreen from '../screens/ProductScreen';
+ 
 import FeedbackScreen from '../screens/FeedbackScreen';
 import SupportScreen from '../screens/SupportScreen';
 import ProfileScreen from '../screens/ProfileScreen';
@@ -90,7 +89,7 @@ const UserNavigator = () => (
           <MaterialIcons name="feedback" size={20} color={color} />
         ),
       }}
-    />
+    />*/}
    
      <Tab.Screen 
       name="Support" 
@@ -105,7 +104,7 @@ const UserNavigator = () => (
           <AntDesign name="questioncircle" size={20} color={color} />
         ),
       }}
-    /> */}
+    /> 
       <Tab.Screen 
       name="Profile" 
       component={ProfileScreen}

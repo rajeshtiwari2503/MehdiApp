@@ -2,8 +2,8 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign, Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import DashboardScreen from '../screens/DashboardScreen';
-import ServiceScreen from '../screens/ServiceScreen';
-import ReportScreen from '../screens/ReportScreen';
+ 
+ 
 import FeedbackScreen from '../screens/FeedbackScreen';
 import SupportScreen from '../screens/SupportScreen';
 import ProfileScreen from '../screens/ProfileScreen';
@@ -106,7 +106,21 @@ const DealerNavigator = () => (
         ),
       }}
     />
-   
+    */}
+     <Tab.Screen 
+      name="Wallet" 
+      component={WalletScreen}
+      options={{
+        tabBarLabel: ({ focused }) => (
+          <Text style={{ color: focused ? Colors.PRIMARY : 'gray',  fontSize: 10 }}>
+            Wallet
+          </Text>
+        ),
+        tabBarIcon: ({ color }) => (
+          <MaterialIcons name="account-balance-wallet" size={20} color={color} />
+        ),
+      }}
+    />
      <Tab.Screen 
       name="Support" 
       component={SupportScreen}
@@ -120,7 +134,7 @@ const DealerNavigator = () => (
           <AntDesign name="questioncircle" size={20} color={color} />
         ),
       }}
-    /> */}
+    />
       <Tab.Screen 
       name="Profile" 
       component={ProfileScreen}
