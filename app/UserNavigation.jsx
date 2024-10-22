@@ -8,6 +8,7 @@ import SupportScreen from '../screens/SupportScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { Colors } from '@/constants/Colors';
 import { SafeAreaView, StyleSheet, Text } from 'react-native';
+import OrderScreen from '../screens/OrderScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -90,7 +91,20 @@ const UserNavigator = () => (
         ),
       }}
     />*/}
-   
+    <Tab.Screen 
+      name="Order" 
+      component={OrderScreen}
+      options={{
+        tabBarLabel: ({ focused }) => (
+          <Text style={{ color: focused ? Colors.PRIMARY : 'gray',  fontSize: 12 }}>
+            Order
+          </Text>
+        ),
+        tabBarIcon: ({ color }) => (
+          <MaterialIcons name="miscellaneous-services" size={20} color={color} />
+        ),
+      }}
+    />
      <Tab.Screen 
       name="Support" 
       component={SupportScreen}
