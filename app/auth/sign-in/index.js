@@ -88,7 +88,7 @@ export default function SignIn() {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Email address</Text>
+                                    <Text style={styles.label}>Email or Mobile No.</Text>
                                     <TextInput
                                         style={[styles.input, errors.email && styles.inputError]}
                                         onBlur={onBlur}
@@ -101,7 +101,7 @@ export default function SignIn() {
                                 </View>
                             )}
                             name="email"
-                            rules={{ required: 'Email is required', pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' } }}
+                            rules={{ required: 'Email or Mobile No. is required'  }}
                             defaultValue=""
                         />
 

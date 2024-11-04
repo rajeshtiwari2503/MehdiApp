@@ -13,7 +13,7 @@ export default function InventoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#c4650c',
     paddingBottom: 10,
     paddingTop: 10,
   },

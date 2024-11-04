@@ -1,16 +1,19 @@
 import { View, StyleSheet } from 'react-native'
 import React from 'react'
-import MyOrders from '../components/MyOrders'
+import DesignSection from '../components/Designs'
+ 
 
-const OrderScreen = () => {
+
+const DesignScreen = () => {
   return (
     <View style={styles.container}>
-      <MyOrders />
+      <DesignSection />
+   
     </View>
   )
 }
 
-export default OrderScreen
+export default DesignScreen
 const styles = StyleSheet.create({
     container: {
       flex: 1,

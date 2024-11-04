@@ -9,6 +9,8 @@ import ProfileScreen from '../screens/ProfileScreen';
 import { Colors } from '@/constants/Colors';
 import { SafeAreaView, StyleSheet, Text } from 'react-native';
 import OrderScreen from '../screens/OrderScreen';
+import DesignScreen from '../screens/DesignScreen';
+ 
 
 const Tab = createBottomTabNavigator();
 
@@ -91,6 +93,20 @@ const UserNavigator = () => (
         ),
       }}
     />*/}
+     <Tab.Screen 
+      name="Design" 
+      component={DesignScreen}
+      options={{
+        tabBarLabel: ({ focused }) => (
+          <Text style={{ color: focused ? Colors.PRIMARY : 'gray',  fontSize: 12 }}>
+            Designs
+          </Text>
+        ),
+        tabBarIcon: ({ color }) => (
+          <MaterialIcons name="category" size={20} color={color} />
+        ),
+      }}
+    />
     <Tab.Screen 
       name="Order" 
       component={OrderScreen}

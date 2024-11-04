@@ -48,12 +48,12 @@ const UserDashboard = () => {
   };
 
   const tab = [
-    { name: "Track Location", icon: "location-outline", type: "Ionicons", bgColor: "#1abc9c" },
-    { name: "Order", icon: "shopping-cart", type: "MaterialIcons", bgColor: "#e74c3c" },
-    { name: "Group Order", icon: "group", type: "FontAwesome", bgColor: "#3498db" },
-    { name: "Mehndi Design", icon: "brush", type: "MaterialIcons", bgColor: "#f39c12" },
-    { name: "Offer & Discount", icon: "pricetag", type: "Ionicons", bgColor: "#9b59b6" },
-    { name: "Helpline & Chat", icon: "chatbox-ellipses", type: "Ionicons", bgColor: "#34495e" }
+    { name: "Track Location", icon: "location-outline", type: "Ionicons", bgColor: "#1abc9c",navigate:"Order" },
+    { name: "Order", icon: "shopping-cart", type: "MaterialIcons", bgColor: "#e74c3c",navigate:"Order" },
+    { name: "Group Order", icon: "group", type: "FontAwesome", bgColor: "#3498db",navigate:"Order" },
+    { name: "Mehndi Design", icon: "brush", type: "MaterialIcons", bgColor: "#f39c12",navigate:"Design" },
+    { name: "Offer & Discount", icon: "pricetag", type: "Ionicons", bgColor: "#9b59b6",navigate:"Order" },
+    { name: "Helpline & Chat", icon: "chatbox-ellipses", type: "Ionicons", bgColor: "#34495e" ,navigate:"Support"}
   ];
     return (
     
@@ -115,7 +115,7 @@ const UserDashboard = () => {
               return (
                 <View key={index} style={styles.itemContainer}>
                   <TouchableOpacity
-                    // onPress={() => navigation.navigate('Products')}
+                    onPress={() => navigation.navigate(item?.navigate)}
                     style={[styles.button, { backgroundColor: item.bgColor }]}
              
                     activeOpacity={0.7}
