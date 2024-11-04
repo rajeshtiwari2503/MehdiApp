@@ -11,28 +11,14 @@ const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-   
+
   const [fontsLoaded] = useFonts({
     'outfit': require('../assets/fonts/Outfit-Regular.ttf'),
     'outfit-medium': require('../assets/fonts/Outfit-Medium.ttf'),
     'outfit-bold': require('../assets/fonts/Outfit-Bold.ttf'),
   });
 
- 
-
- 
-
   useEffect(() => {
-    async function prepare() {
-      if (!fontsLoaded) {
-        await SplashScreen.preventAutoHideAsync(); // Keep splash screen visible
-      } else {
-        await SplashScreen.hideAsync(); // Hide splash screen when fonts are loaded
-      }
-    
-    }
-    prepare();
     const checkUser = async () => {
       try {
         const userData = await AsyncStorage.getItem('user');
@@ -41,22 +27,21 @@ const AppNavigator = () => {
         }
       } catch (error) {
         console.log('Error retrieving user data', error);
-      } finally {
-        setLoading(false);
       }
     };
 
     checkUser();
-  }, [fontsLoaded]);
+  }, []);
 
-  if (loading || !fontsLoaded) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
+  if (!fontsLoaded) {
+    console.log("Fonts not loaded yet.");
+    // You can return null or some basic component if you want something to render before fonts load
+    return null;
   }
-// console.log(user);
+  if (fontsLoaded) {
+    console.log("Fonts successfully loaded.");
+    
+  }
 
   return (
     <>
