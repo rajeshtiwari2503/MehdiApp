@@ -68,7 +68,7 @@ const UserDashboard = () => {
           <Ionicons name="notifications-outline" size={28} color="#000" />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>Dashboard</Text>
+        <Text style={styles.headerTitle}>S Mehndi है जहाँ खुशियाँ हैं वहाँ</Text>
 
         <TouchableOpacity
           onPress={() => navigation.navigate('UserProfile')}
@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 0,
     backgroundColor: '#fff',
     elevation: 3, // Gives shadow on Android
     shadowColor: '#000', // iOS shadow
@@ -166,12 +166,12 @@ const styles = StyleSheet.create({
   
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#e74c3c',
   },
   iconButton: {
-    padding: 5,
+    padding: 4,
   },
   content: {
     padding: 10,

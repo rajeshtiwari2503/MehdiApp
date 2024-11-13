@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, Button, ActivityIndicator, Alert, ScrollView, RefreshControl, StyleSheet } from 'react-native';
+import { View, Text, Button, ActivityIndicator, Alert, ScrollView, RefreshControl, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import http_request from '../http_request';
+import DesignSection from './Designs';
 
-const MyOrders = () => {
+const MyOrders = ({ route }) => {
+  const [tab, setTab] = useState('Designs');
   const [order, setOrder] = useState(null);
   const [user, setUser] = useState(null);
   const [myOrder, setMyOrder] = useState([]);
@@ -18,9 +20,10 @@ const MyOrders = () => {
 
       if (storedOrder) setOrder(JSON.parse(storedOrder));
       if (storedUser) setUser(JSON.parse(storedUser));
-      
+
       fetchDesigns();
     };
+
     retrieveData();
   }, [refresh]);
 
@@ -28,14 +31,12 @@ const MyOrders = () => {
     try {
       setLoading(true);
       const storedUser = await AsyncStorage.getItem("user");
-      const userD=JSON.parse(storedUser);
-        // const response = await http_request.get(`/getOrderByUserId/${order.user._id}`);
-        const response = await http_request.get(`/getAllOrder`);
-        const { data } = response;
-        const filData=data?.filter((f)=>f?.customerId===userD?.user?._id)
-      
-        setMyOrder(filData);
-    
+      const userD = JSON.parse(storedUser);
+      const response = await http_request.get(`/getAllOrder`);
+      const { data } = response;
+      const filData = data?.filter((f) => f?.customerId === userD?.user?._id);
+
+      setMyOrder(filData);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -63,10 +64,8 @@ const MyOrders = () => {
 
     try {
       setLoading(true);
-      const response = await http_request.post('/addOrder', orderData);
-      const { data } = response;
-   
-      
+      await http_request.post('/addOrder', orderData);
+
       await AsyncStorage.removeItem("orderM");
       setRefresh(Math.random());
       setOrder(null);
@@ -84,67 +83,95 @@ const MyOrders = () => {
     setRefreshing(true);
     setOrder(null);
     setIsOrderCreated(false);
-    fetchDesigns()
-    setRefresh( Math.random());
+    fetchDesigns();
+    setRefresh(Math.random());
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   }, []);
 
+  const retOrder = () => {
+     setTab("Orders")
+     onRefresh()
+  };
+
   return (
-    <ScrollView
-      style={styles.container}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-    >
-      <Text style={styles.header}>My Orders</Text>
+    <>
+      <View style={styles.tabContainer}>
+        <TouchableOpacity onPress={() => setTab('Designs')} style={[styles.tabButton, tab === 'Designs' && styles.activeTab]}>
+          <Text style={styles.tabText}>Designs</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setTab('Orders')} style={[styles.tabButton, tab === 'Orders' && styles.activeTab]}>
+          <Text style={styles.tabText}>Orders</Text>
+        </TouchableOpacity>
+      </View>
 
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+      {tab === 'Designs' ? (
+        <DesignSection retOrder={retOrder} />
       ) : (
-        <View>
-          {user && (
-            <View style={styles.userDetails}>
-              <Text style={styles.sectionHeader}>User Details</Text>
-              <Text>Name: {user?.user?.name}</Text>
-              <Text>Email: {user?.user?.email}</Text>
-              <Text>Contact: {user?.user?.contact}</Text>
-              <Text>Address: {user?.user?.address}</Text>
-            </View>
-          )}
+        <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+          <Text style={styles.header}>My Orders</Text>
 
-          {order ? (
-            <View style={styles.orderDetails}>
-              <Text style={styles.sectionHeader}>Order Details</Text>
-              <Text>Design: {order.item?.name}</Text>
-              <Text>Price: {order.item?.price}</Text>
-              {!isOrderCreated ? (
-                <Button title="Create Order" onPress={handleCreateOrder} color="#1E90FF" />
-              ) : (
-                <Text style={styles.successText}>Order successfully created!</Text>
-              )}
-            </View>
+          {loading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
           ) : (
-            <Text></Text>
-          )}
-
-          <View style={{ margin: 8 }}>
-            <Text style={styles.header}>Your Orders</Text>
-            {myOrder.length > 0 ? (
-              myOrder.map((item, index) => (
-                <View key={index} style={styles.myOrderItem}>
-                  <Text style={styles.sectionHeader}>Order Details</Text>
-                  <Text>Design: {item.design}</Text>
-                  <Text>Price: {item.price}</Text>
-                  <Text>Date: {new Date(item?.createdAt).toLocaleString()}</Text>
+            <View>
+              {user && (
+                <View style={styles.userDetails}>
+                  <Text style={styles.sectionHeader}>User Details</Text>
+                  <Text>Name: {user?.user?.name}</Text>
+                  <Text>Email: {user?.user?.email}</Text>
+                  <Text>Contact: {user?.user?.contact}</Text>
+                  <Text>Address: {user?.user?.address}</Text>
                 </View>
-              ))
-            ) : (
-              <Text>No order history found.</Text>
-            )}
-          </View>
-        </View>
+              )}
+
+              {order ? (
+                <View style={styles.orderDetails}>
+                 
+                  <View style={styles.textContainer}>
+                    <Text style={styles.sectionHeader}>Order Details</Text>
+                    <Text>Design: {order.item?.name}</Text>
+                    <Text>Price: {order.item?.price}</Text>
+                    {!isOrderCreated ? (
+                      <TouchableOpacity style={styles.customButton} onPress={handleCreateOrder}>
+                        <Text style={styles.buttonText}>Create Order</Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <Text style={styles.successText}>Order successfully created!</Text>
+                    )}
+                  </View>
+                  <View style={styles.imageContainer}>
+                    <Image
+                      source={{ uri: order?.item?.image }}
+                      style={styles.image}
+                    />
+                  </View>
+                </View>
+              ) : (
+                <Text> </Text>
+              )}
+
+              <View style={{ margin: 8 }}>
+                <Text style={styles.header}>Your Orders</Text>
+                {myOrder.length > 0 ? (
+                  myOrder.map((item, index) => (
+                    <View key={index} style={styles.myOrderItem}>
+                      <Text style={styles.sectionHeader}>Order Details</Text>
+                      <Text>Design: {item.design}</Text>
+                      <Text>Price: {item.price}</Text>
+                      <Text>Date: {new Date(item?.createdAt).toLocaleString()}</Text>
+                    </View>
+                  ))
+                ) : (
+                  <Text>No order history found.</Text>
+                )}
+              </View>
+            </View>
+          )}
+        </ScrollView>
       )}
-    </ScrollView>
+    </>
   );
 };
 
@@ -154,7 +181,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFF',
     marginTop: 5,
     marginBottom: 5,
-    borderRadius: 30,padding:10
+    borderRadius: 30,
+    padding: 10,
   },
   header: {
     fontSize: 24,
@@ -170,18 +198,32 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   orderDetails: {
+    flexDirection: 'row', // Align image and text horizontally
+    alignItems: 'center', // Center vertically
     padding: 16,
     backgroundColor: '#ffffff',
     shadowColor: '#000',
     borderRadius: 8,
     margin: 8,
     elevation: 4,
-
+  },
+  imageContainer: {
+    flex: 1,
+    marginLeft:25,
+    alignItems: 'flex-end', // Align the image to the right side
+  },
+  textContainer: {
+    flex: 2,
   },
   sectionHeader: {
     fontSize: 20,
-    fontWeight: 'bold',
     marginBottom: 8,
+    fontWeight: 'bold',
+  },
+  image: {
+    width: 100, // Adjust width as needed
+    height: 100, // Adjust height as needed
+    borderRadius: 8,
   },
   successText: {
     color: 'green',
@@ -194,6 +236,37 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
     elevation: 4,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+    backgroundColor: '#e0e0e0',
+  },
+  tabButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  activeTab: {
+    borderBottomWidth: 2,
+    borderBottomColor: '#1E90FF',
+  },
+  tabText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  customButton: {
+    backgroundColor: '#1E90FF',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 

@@ -1,13 +1,14 @@
 import { View, StyleSheet } from 'react-native'
 import React from 'react'
-import DesignSection from '../components/Designs'
+
+import MyDesign from '../components/MyDesign'
  
 
 
 const DesignScreen = () => {
   return (
     <View style={styles.container}>
-      <DesignSection />
+      <MyDesign />
    
     </View>
   )
