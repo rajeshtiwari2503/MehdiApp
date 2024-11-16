@@ -7,6 +7,8 @@ import DealerNavigator from './DealerNavigation';
  
 import Login from "../components/Login";
 import { useFonts } from 'expo-font';
+import OrderScreen from '../screens/OrderScreen';
+import GroupOrderDesign from './groupOrder';
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
@@ -65,12 +67,13 @@ const AppNavigator = () => {
            
               {user?.user?.role === undefined && <Stack.Screen name="RoleSelection" component={Login} />}
              
-              
+             
       
             </>
           ) : (
             <Stack.Screen name="RoleSelection" component={Login} />
           )}
+           <Stack.Screen name="groupOrder" component={GroupOrderDesign} />
         </Stack.Navigator>
         
       )}

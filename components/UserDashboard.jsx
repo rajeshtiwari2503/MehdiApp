@@ -8,6 +8,7 @@ import http_request from "../http_request"; // Assuming this is your HTTP reques
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors'; // Adjust import as per your structure
+import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
@@ -24,6 +25,7 @@ const UserDashboard = () => {
   const [notifications, setNotifications] = useState([]);
   const [refresh, setRefresh] = useState("");
   const navigation = useNavigation();
+  const router = useRouter();
 
   const scrollRef = useRef(null);  // ScrollView reference
   const [activeIndex, setActiveIndex] = useState(0);
@@ -50,7 +52,7 @@ const UserDashboard = () => {
   const tab = [
     { name: "Track Location", icon: "location-outline", type: "Ionicons", bgColor: "#1abc9c",navigate:"Order" },
     { name: "Order", icon: "shopping-cart", type: "MaterialIcons", bgColor: "#e74c3c",navigate:"Order" },
-    { name: "Group Order", icon: "group", type: "FontAwesome", bgColor: "#3498db",navigate:"Order" },
+    { name: "Group Order", icon: "group", type: "FontAwesome", bgColor: "#3498db",navigate:"groupOrder" },
     { name: "Mehndi Design", icon: "brush", type: "MaterialIcons", bgColor: "#f39c12",navigate:"Design" },
     { name: "Offer & Discount", icon: "pricetag", type: "Ionicons", bgColor: "#9b59b6",navigate:"Order" },
     { name: "Helpline & Chat", icon: "chatbox-ellipses", type: "Ionicons", bgColor: "#34495e" ,navigate:"Support"}

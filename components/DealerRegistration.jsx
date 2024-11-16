@@ -1,118 +1,173 @@
-import React, {   useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Image } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
-import { Colors } from '@/constants/Colors';
 import Toast from 'react-native-toast-message';
-import { Checkbox } from 'react-native-paper';
+import * as ImagePicker from 'expo-image-picker';
 import http_request from "../http_request";
+import { Checkbox } from 'react-native-paper';
+import { Colors } from '@/constants/Colors';
+import axios from 'axios';
+ 
 
-export default function DealerRegistrationForm({response}) {
-
-
+export default function DealerRegistrationForm({ response }) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [aadharImage, setAadharImage] = useState(null);
 
-    const { control, handleSubmit, watch, getValues, formState: { errors } } = useForm();
+    const { control, handleSubmit, getValues, formState: { errors } } = useForm();
 
     const onSubmit = data => {
-        Register(data);
+        const repData={...data,role:"AGENT"}
+        Register(repData);
     };
 
-    const Register = async (reqdata) => {
-        try {
-         
-         const userData={...reqdata,role:"AGENT"}
-        //  console.log(userData);
-            setLoading(true);
-            let response = await http_request.post('/registration', userData);
-            let { data } = response;
-     
-            setLoading(false);
-
-            Toast.show({ type: 'success', text: data.msg });
-            router.push("auth/sign-in");
-        } catch (err) {
-            setLoading(false);
-            // Toast.show({ type: 'error', text: err?.response?.data?.msg });
-            console.log(err);
-            response(err?.response?.data?.msg )
+    const selectAadharImage = async () => {
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!permissionResult.granted) {
+            alert("Permission to access camera roll is required!");
+            return;
+        }
+    
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+        });
+    
+        if (!result.canceled) {
+            console.log("Selected Image URI:", result.assets[0].uri);
+            setAadharImage(result.assets[0].uri); // Save only the URI to state
         }
     };
+    
+    const Register = async (reqdata) => {
+        try {
+            setLoading(true);
+    
+            const formData = new FormData();
+    
+            // Add other request data to formData
+            // Object.keys(reqdata).forEach((key) => {
+            //     formData.append(key, reqdata[key]);
+            // });
+            formData.append('name', reqdata.name);
+            formData.append('email', reqdata.email);
+            formData.append('contact', reqdata.contact);
+            formData.append('address', reqdata.address);
+            formData.append('password', reqdata.password);
+          
+            formData.append('acceptedTerms', reqdata.acceptedTerms);
+            formData.append('role', reqdata.role);
+            // Add the image to formData if `aadharImage` is set
+            if (aadharImage) {
+                formData.append('aadharImage', {
+                    uri: aadharImage, // Use the correct URI from state
+                    type: 'image/jpeg', // Set appropriate MIME type
+                    name: `${new Date().toISOString()}_aadhar.jpg`, // Unique filename
+                });
+            }
+    
+            const config = {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                },
+            };
+    
+            console.log('Sending request with formData:', formData);
+            //  http://192.168.159.22:5000
+            let response = await axios.post('https://mehdiappbackend.onrender.com/agentRegistration', formData, config); // Replace with your full server URL
+    
+            setLoading(false);
+            console.log("Server Response:", response.data);
+            // Uncomment if using a toast notification or navigation after success
+            Toast.show({ type: 'success', text1: response.data.msg });
+            // router.push("auth/sign-in");
+        } catch (error) {
+            setLoading(false);
+            console.log('Error occurred:', error);
+    
+            // Handle network error specifically
+            if (error.message === 'Network Error') {
+                console.error('Network error - Check if the API server is running and reachable.');
+            }
+        }
+    };
+    
 
     return (
-        
-            <View style={{marginTop:10}} >
-                <Toast />
-                <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Name</Text>
-                    <Controller
-                        control={control}
-                        name="name"
-                        rules={{
-                            required: 'Name is required',
-                            minLength: { value: 3, message: 'Name must be at least 3 characters long' }
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <TextInput
-                                style={[styles.input, errors.name && styles.errorInput]}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                placeholder="Name"
-                            />
-                        )}
-                    />
-                    {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
-                </View>
+        <View style={{ marginTop: 10 }}>
+            <Toast />
+            <View style={styles.inputContainer}>
+                <Text style={styles.label}>Name</Text>
+                <Controller
+                    control={control}
+                    name="name"
+                    rules={{
+                        required: 'Name is required',
+                        minLength: { value: 3, message: 'Name must be at least 3 characters long' }
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            style={[styles.input, errors.name && styles.errorInput]}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            placeholder="Name"
+                        />
+                    )}
+                />
+                {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
+            </View>
 
-                <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Email address</Text>
-                    <Controller
-                        control={control}
-                        name="email"
-                        rules={{
-                            required: 'Email is required',
-                            pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' }
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <TextInput
-                                style={[styles.input, errors.email && styles.errorInput]}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                placeholder="Email address"
-                                keyboardType="email-address"
-                                autoCapitalize="none"
-                            />
-                        )}
-                    />
-                    {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
-                </View>
+            <View style={styles.inputContainer}>
+                <Text style={styles.label}>Email address</Text>
+                <Controller
+                    control={control}
+                    name="email"
+                    rules={{
+                        required: 'Email is required',
+                        pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' }
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            style={[styles.input, errors.email && styles.errorInput]}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            placeholder="Email address"
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                        />
+                    )}
+                />
+                {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
+            </View>
 
-                <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Contact No.</Text>
-                    <Controller
-                        control={control}
-                        name="contact"
-                        rules={{
-                            required: 'Contact number is required',
-                            pattern: { value: /^\d{10}$/, message: 'Contact No. must be at least 10 characters long' }
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <TextInput
-                                style={[styles.input, errors.contact && styles.errorInput]}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                placeholder="Contact No."
-                                keyboardType="phone-pad"
-                            />
-                        )}
-                    />
-                    {errors.contact && <Text style={styles.errorText}>{errors.contact.message}</Text>}
-                </View>
-                {/* <View style={styles.inputContainer}>
+            <View style={styles.inputContainer}>
+                <Text style={styles.label}>Contact No.</Text>
+                <Controller
+                    control={control}
+                    name="contact"
+                    rules={{
+                        required: 'Contact number is required',
+                        pattern: { value: /^\d{10}$/, message: 'Contact No. must be at least 10 characters long' }
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            style={[styles.input, errors.contact && styles.errorInput]}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            placeholder="Contact No."
+                            keyboardType="phone-pad"
+                        />
+                    )}
+                />
+                {errors.contact && <Text style={styles.errorText}>{errors.contact.message}</Text>}
+            </View>
+            {/* <View style={styles.inputContainer}>
                 <Text style={styles.label}>Business Registration Number</Text>
                 <Controller
                     control={control}
@@ -156,27 +211,27 @@ export default function DealerRegistrationForm({response}) {
                 {errors.gstVatNumber && <Text style={styles.errorText}>{errors.gstVatNumber.message}</Text>}
             </View> */}
             <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Address</Text>
-                    <Controller
-                        control={control}
-                        name="address"
-                        rules={{
-                            required: 'Address is required',
-                            minLength: { value: 10, message: 'Address must be at least 10 characters long' }
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <TextInput
-                                style={[styles.input, errors.businessAddress && styles.errorInput]}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                placeholder="Address"
-                            />
-                        )}
-                    />
-                    {errors.address && <Text style={styles.errorText}>{errors.address.message}</Text>}
-                </View>
-                {/* <View style={styles.inputContainer}>
+                <Text style={styles.label}>Address</Text>
+                <Controller
+                    control={control}
+                    name="address"
+                    rules={{
+                        required: 'Address is required',
+                        minLength: { value: 10, message: 'Address must be at least 10 characters long' }
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            style={[styles.input, errors.businessAddress && styles.errorInput]}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            placeholder="Address"
+                        />
+                    )}
+                />
+                {errors.address && <Text style={styles.errorText}>{errors.address.message}</Text>}
+            </View>
+            {/* <View style={styles.inputContainer}>
                     <Text style={styles.label}>Contact Person</Text>
                     <Controller
                         control={control}
@@ -197,93 +252,102 @@ export default function DealerRegistrationForm({response}) {
                     />
                     {errors.contactPerson && <Text style={styles.errorText}>{errors.contactPerson.message}</Text>}
                 </View> */}
-                <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Password</Text>
-                    <Controller
-                        control={control}
-                        name="password"
-                        rules={{
-                            required: 'Password is required',
-                            minLength: { value: 8, message: 'Password must be at least 8 characters long' }
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <TextInput
-                                style={[styles.input, errors.password && styles.errorInput]}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                placeholder="Password"
-                                secureTextEntry
-                            />
-                        )}
-                    />
-                    {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
-                </View>
-
-                <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Confirm Password</Text>
-                    <Controller
-                        control={control}
-                        name="confirmPassword"
-                        rules={{
-                            required: 'Confirm Password is required',
-                            validate: value => value === getValues('password') || 'The passwords do not match'
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <TextInput
-                                style={[styles.input, errors.confirmPassword && styles.errorInput]}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                placeholder="Confirm Password"
-                                secureTextEntry
-                            />
-                        )}
-                    />
-                    {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword.message}</Text>}
-                </View>
-
-               
+            <View style={styles.inputContainer}>
+                <Text style={styles.label}>Upload Aadhaar Image</Text>
+                <TouchableOpacity onPress={selectAadharImage} style={styles.imageUploadButton}>
+                    <Text style={styles.imageUploadText}>Select Image</Text>
+                </TouchableOpacity>
+                {aadharImage && (
+                    <Image source={{ uri: aadharImage}} style={styles.previewImage} />
+                )}
+            </View>
+            <View style={styles.inputContainer}>
+                <Text style={styles.label}>Password</Text>
                 <Controller
                     control={control}
-                    name="acceptedTerms"
-                    rules={{ required: 'You must accept the terms and conditions' }}
+                    name="password"
+                    rules={{
+                        required: 'Password is required',
+                        minLength: { value: 8, message: 'Password must be at least 8 characters long' }
+                    }}
                     render={({ field: { onChange, onBlur, value } }) => (
-                        <View style={styles.checkboxContainer}>
-                            <Checkbox
-                                status={value ? 'checked' : 'unchecked'}
-                                onPress={() => onChange(!value)}
-                                color="#007bff"
-                            />
-                            <Text style={styles.label}>I accept the terms and conditions</Text>
-                        </View>
+                        <TextInput
+                            style={[styles.input, errors.password && styles.errorInput]}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            placeholder="Password"
+                            secureTextEntry
+                        />
                     )}
                 />
-                {errors.acceptedTerms && <Text style={styles.errorText}>{errors.acceptedTerms.message}</Text>}
-
-
-
-                <TouchableOpacity
-                    style={[styles.button, loading && styles.saveButtonDisabled]}
-                    disabled={loading}
-                    onPress={handleSubmit(onSubmit)}
-                >
-                    {loading ? (
-                        <ActivityIndicator size="small" color="#ffffff" />
-                    ) : (
-                        <Text style={styles.buttonText}>Sign Up</Text>
-                    )}
-                </TouchableOpacity>
-
-                <Text style={styles.signInText}>
-                    Already registered?{' '}
-                    <Text onPress={() => router.push("auth/sign-in")} style={styles.signInLink}>
-                        Sign In
-                    </Text>
-                </Text>
+                {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
             </View>
-       
-    )
+
+            <View style={styles.inputContainer}>
+                <Text style={styles.label}>Confirm Password</Text>
+                <Controller
+                    control={control}
+                    name="confirmPassword"
+                    rules={{
+                        required: 'Confirm Password is required',
+                        validate: value => value === getValues('password') || 'The passwords do not match'
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            style={[styles.input, errors.confirmPassword && styles.errorInput]}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            placeholder="Confirm Password"
+                            secureTextEntry
+                        />
+                    )}
+                />
+                {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword.message}</Text>}
+            </View>
+
+
+            <Controller
+                control={control}
+                name="acceptedTerms"
+                rules={{ required: 'You must accept the terms and conditions' }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                    <View style={styles.checkboxContainer}>
+                        <Checkbox
+                            status={value ? 'checked' : 'unchecked'}
+                            onPress={() => onChange(!value)}
+                            color="#007bff"
+                        />
+                        <Text style={styles.label}>I accept the terms and conditions</Text>
+                    </View>
+                )}
+            />
+            {errors.acceptedTerms && <Text style={styles.errorText}>{errors.acceptedTerms.message}</Text>}
+
+
+
+
+            <TouchableOpacity
+                style={[styles.button, loading && styles.saveButtonDisabled]}
+                disabled={loading}
+                onPress={handleSubmit(onSubmit)}
+            >
+                {loading ? (
+                    <ActivityIndicator size="small" color="#ffffff" />
+                ) : (
+                    <Text style={styles.buttonText}>Sign Up</Text>
+                )}
+            </TouchableOpacity>
+
+            <Text style={styles.signInText}>
+                Already registered?{' '}
+                <Text onPress={() => router.push("auth/sign-in")} style={styles.signInLink}>
+                    Sign In
+                </Text>
+            </Text>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -434,4 +498,46 @@ const styles = StyleSheet.create({
         color: '#4F46E5',
         fontFamily: "outfit"
     },
-})
+    inputContainer: {
+        marginBottom: 10,
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    imageUploadButton: {
+        padding: 10,
+        backgroundColor: '#007bff',
+        borderRadius: 5,
+        marginTop: 10,
+    },
+    imageUploadText: {
+        color: '#fff',
+        textAlign: 'center',
+    },
+    previewImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 8,
+        marginTop: 10,
+    },
+    button: {
+        backgroundColor: '#007bff',
+        padding: 15,
+        borderRadius: 8,
+    },
+    saveButtonDisabled: {
+        backgroundColor: '#cccccc',
+    },
+    buttonText: {
+        color: '#fff',
+        textAlign: 'center',
+    },
+    signInText: {
+        textAlign: 'center',
+        marginTop: 20,
+    },
+    signInLink: {
+        color: '#007bff',
+    },
+});

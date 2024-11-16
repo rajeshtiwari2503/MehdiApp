@@ -27,7 +27,8 @@ const DesignSection = ({ retOrder }) => {
     try {
       setLoading(true);
       const response = await http_request.get("/getAllMehndiDesign");
-      setDesigns(response.data);
+      const dataD=response?.data?.filter((f)=>f?.groupOrder===false)     
+      setDesigns(dataD);
     } catch (error) {
       console.error("Error fetching designs:", error);
     } finally {
