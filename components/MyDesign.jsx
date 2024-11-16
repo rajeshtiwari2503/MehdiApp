@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import http_request from '../http_request'; // Replace with your actual HTTP request setup
 import { useNavigation } from '@react-navigation/native';
 
-const DesignSection = ({ retOrder }) => {
+const MyDesign = ({ retOrder }) => {
   // console.log(retOrder);
   
   const navigation = useNavigation();
@@ -26,9 +26,8 @@ const DesignSection = ({ retOrder }) => {
   const fetchDesigns = async () => {
     try {
       setLoading(true);
-      const response = await http_request.get("/getAllMehndiDesign");
-      const dataD=response?.data?.filter((f)=>f?.groupOrder===false)     
-      setDesigns(dataD);
+      const response = await http_request.get("/getAllMehndiCategory");
+      setDesigns(response.data);
     } catch (error) {
       console.error("Error fetching designs:", error);
     } finally {
@@ -68,7 +67,7 @@ const DesignSection = ({ retOrder }) => {
                 imageStyle={{ borderRadius: 8 }}
               >
                 <View style={styles.overlay}>
-                  <Text style={styles.cardTitle}>{item.name}</Text>
+                  <Text style={styles.cardTitle}>{item.categoryName}</Text>
                   {/* <Text style={styles.price}>{item.price}</Text> */}
                 </View>
               </ImageBackground>
@@ -125,4 +124,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DesignSection;
+export default MyDesign;

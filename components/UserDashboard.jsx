@@ -8,6 +8,7 @@ import http_request from "../http_request"; // Assuming this is your HTTP reques
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors'; // Adjust import as per your structure
+import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
@@ -24,6 +25,7 @@ const UserDashboard = () => {
   const [notifications, setNotifications] = useState([]);
   const [refresh, setRefresh] = useState("");
   const navigation = useNavigation();
+  const router = useRouter();
 
   const scrollRef = useRef(null);  // ScrollView reference
   const [activeIndex, setActiveIndex] = useState(0);
@@ -50,7 +52,7 @@ const UserDashboard = () => {
   const tab = [
     { name: "Track Location", icon: "location-outline", type: "Ionicons", bgColor: "#1abc9c",navigate:"Order" },
     { name: "Order", icon: "shopping-cart", type: "MaterialIcons", bgColor: "#e74c3c",navigate:"Order" },
-    { name: "Group Order", icon: "group", type: "FontAwesome", bgColor: "#3498db",navigate:"Order" },
+    { name: "Group Order", icon: "group", type: "FontAwesome", bgColor: "#3498db",navigate:"groupOrder" },
     { name: "Mehndi Design", icon: "brush", type: "MaterialIcons", bgColor: "#f39c12",navigate:"Design" },
     { name: "Offer & Discount", icon: "pricetag", type: "Ionicons", bgColor: "#9b59b6",navigate:"Order" },
     { name: "Helpline & Chat", icon: "chatbox-ellipses", type: "Ionicons", bgColor: "#34495e" ,navigate:"Support"}
@@ -68,7 +70,7 @@ const UserDashboard = () => {
           <Ionicons name="notifications-outline" size={28} color="#000" />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>Dashboard</Text>
+        <Text style={styles.headerTitle}>S Mehndi है जहाँ खुशियाँ हैं वहाँ</Text>
 
         <TouchableOpacity
           onPress={() => navigation.navigate('UserProfile')}
@@ -153,8 +155,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 0,
     backgroundColor: '#fff',
     elevation: 3, // Gives shadow on Android
     shadowColor: '#000', // iOS shadow
@@ -166,12 +168,12 @@ const styles = StyleSheet.create({
   
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#e74c3c',
   },
   iconButton: {
-    padding: 5,
+    padding: 4,
   },
   content: {
     padding: 10,
