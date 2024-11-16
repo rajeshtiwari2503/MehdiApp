@@ -11,13 +11,17 @@ import {
   Button,
   Alert,
   SafeAreaView,
+  TextInput,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import http_request from '../../http_request';
+import { Checkbox } from 'react-native-paper';
 
 const GroupOrderDesign = ({ designsData }) => {
+  const [order, setOrder] = useState(null);
+  const [user, setUser] = useState(null);
   const [designs, setDesigns] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -26,8 +30,23 @@ const GroupOrderDesign = ({ designsData }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [alternateNo, setAlternateNo] = useState('');
+  const [address, setAddress] = useState('');
+  const [contact, setContact] = useState('');
+  const [bridalMehndi, setBridalMehndi] = useState(false);
 
   useEffect(() => {
+    const retrieveData = async () => {
+      const storedOrder = await AsyncStorage.getItem("orderM");
+      const storedUser = await AsyncStorage.getItem("user");
+
+      if (storedOrder) setOrder(JSON.parse(storedOrder));
+      if (storedUser) setUser(JSON.parse(storedUser));
+
+      fetchDesigns();
+    };
+
+    retrieveData();
     fetchDesigns();
   }, []);
 
@@ -36,7 +55,7 @@ const GroupOrderDesign = ({ designsData }) => {
       setLoading(true);
       // Replace with your actual HTTP request to fetch designs
       const response = await http_request.get('/getAllMehndiDesign'); // Replace with your endpoint
-      const {data} =   response;
+      const { data } = response;
       const filteredDesigns = data?.filter((design) => design.groupOrder === true);
       setDesigns(filteredDesigns);
     } catch (error) {
@@ -97,6 +116,16 @@ const GroupOrderDesign = ({ designsData }) => {
 
 
   ];
+
+  const handleGroup = (design) => {
+    console.log(design);
+
+    AsyncStorage.setItem("orderM", JSON.stringify(design));
+    setShowMenu(true)
+  }
+
+ 
+  
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Group Order</Text>
@@ -104,41 +133,41 @@ const GroupOrderDesign = ({ designsData }) => {
         <ActivityIndicator size="large" color="#000" />
       ) : (
         <>
-       {showMenu===false? 
-       <ScrollView contentContainerStyle={styles.grid}>
-          {designs.map((design, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.card}
-              onPress={() => setShowMenu(true)}
-            >
-              <ImageBackground
-                source={{ uri: design.image }}
-                resizeMode="cover"
-                style={styles.imageBackground}
-              >
-                <View style={styles.overlay}>
-                  <Text style={styles.cardTitle}>{design.name}</Text>
-                </View>
-              </ImageBackground>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-        : <ScrollView contentContainerStyle={styles.grid}>
-          <View style={styles.card}>
-          {items.map((item, index) => (
-            <View key={index} style={styles.item}>
-              <Text style={styles.itemName}>{item.name}</Text>
-              <Text style={styles.itemPrice}>{item.price}</Text>
-            </View>
-          ))}
-            <TouchableOpacity style={styles.button} onPress={() => openModal( )}>
-            <Text style={styles.buttonText}>Proceed to Order</Text>
-          </TouchableOpacity>
-        </View>
-         </ScrollView>
-       }
-       </>
+          {showMenu === false ?
+            <ScrollView contentContainerStyle={styles.grid}>
+              {designs.map((design, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.card}
+                  onPress={() => handleGroup(design)}
+                >
+                  <ImageBackground
+                    source={{ uri: design.image }}
+                    resizeMode="cover"
+                    style={styles.imageBackground}
+                  >
+                    <View style={styles.overlay}>
+                      <Text style={styles.cardTitle}>{design.name}</Text>
+                    </View>
+                  </ImageBackground>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            : <ScrollView contentContainerStyle={styles.grid}>
+              <View style={styles.card}>
+                {items.map((item, index) => (
+                  <View key={index} style={styles.item}>
+                    <Text style={styles.itemName}>{item.name}</Text>
+                    <Text style={styles.itemPrice}>{item.price}</Text>
+                  </View>
+                ))}
+                <TouchableOpacity style={styles.button} onPress={() => openModal()}>
+                  <Text style={styles.buttonText}>Proceed to Order</Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          }
+        </>
       )}
 
       {/* Modal */}
@@ -187,6 +216,42 @@ const GroupOrderDesign = ({ designsData }) => {
                 onChange={handleDateChange}
               />
             )}
+            {/* Address */}
+            <Text style={styles.label}>Address</Text>
+            <TextInput
+              style={styles.input}
+              value={address}
+              onChangeText={setAddress}
+              placeholder="Enter your address"
+              multiline
+            />
+            {/* Contact Number */}
+            <Text style={styles.label}>Contact Number</Text>
+            <TextInput
+              style={styles.input}
+              value={contact}
+              onChangeText={setContact}
+              placeholder="Enter your contact number"
+              keyboardType="phone-pad"
+            />
+
+            {/* Alternate Contact Number */}
+            <Text style={styles.label}>Alternate Contact Number</Text>
+            <TextInput
+              style={styles.input}
+              value={alternateNo}
+              onChangeText={setAlternateNo}
+              placeholder="Enter alternate contact number"
+              keyboardType="phone-pad"
+            />
+            <View style={styles.checkboxContainer}>
+            <Checkbox
+            status={bridalMehndi ? 'checked' : 'unchecked'}  // Check if it is checked or unchecked
+            onPress={() => setBridalMehndi(!bridalMehndi)}  // Toggle the checkbox on press
+          />
+              <Text style={styles.checkboxLabel}>Bridal Mehndi</Text>
+            </View>
+
 
             <View style={styles.modalButtons}>
               <Button title="Place Order" onPress={handleOrder} />
@@ -201,12 +266,12 @@ const GroupOrderDesign = ({ designsData }) => {
 
 const styles = StyleSheet.create({
   container: {
-    
+
     flex: 1,
     backgroundColor: '#c4650c',
     paddingBottom: 5,
     paddingTop: 5,
-    padding:10
+    padding: 10
   },
   header: {
     fontSize: 24,
@@ -274,6 +339,14 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
   },
+  input: {
+    height: 40,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 4,
+    marginBottom: 16,
+    paddingHorizontal: 8,
+  },
   datePickerButton: {
     padding: 10,
     backgroundColor: '#f0f0f0',
@@ -330,6 +403,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  checkboxLabel: {
+    fontSize: 16,
+    marginLeft: 10,
   },
 });
 
