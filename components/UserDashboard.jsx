@@ -50,11 +50,11 @@ const UserDashboard = () => {
   };
 
   const tab = [
-    { name: "Track Location", icon: "location-outline", type: "Ionicons", bgColor: "#1abc9c",navigate:"Order" },
+    { name: "Track Location", icon: "location-outline", type: "Ionicons", bgColor: "#1abc9c",navigate:"Dashboard" },
     { name: "Order", icon: "shopping-cart", type: "MaterialIcons", bgColor: "#e74c3c",navigate:"Order" },
     { name: "Group Order", icon: "group", type: "FontAwesome", bgColor: "#3498db",navigate:"groupOrder" },
     { name: "Mehndi Design", icon: "brush", type: "MaterialIcons", bgColor: "#f39c12",navigate:"Design" },
-    { name: "Offer & Discount", icon: "pricetag", type: "Ionicons", bgColor: "#9b59b6",navigate:"Order" },
+    { name: "Offer & Discount", icon: "pricetag", type: "Ionicons", bgColor: "#9b59b6",navigate:"Dashboard" },
     { name: "Helpline & Chat", icon: "chatbox-ellipses", type: "Ionicons", bgColor: "#34495e" ,navigate:"Support"}
   ];
     return (
