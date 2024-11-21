@@ -59,6 +59,8 @@ const MyOrders = ({ route }) => {
       agentName: "Agent Name Here",
       agentId: "Agent ID Here",
       design: order?.item?.name,
+      designId: order?.item?._id,
+      image: order?.item?.image,
       price: order?.item?.price,
     };
 
@@ -91,9 +93,10 @@ const MyOrders = ({ route }) => {
   }, []);
 
   const retOrder = () => {
-     setTab("Orders")
-     onRefresh()
+    setTab("Orders")
+    onRefresh()
   };
+  // console.log(myOrder);
 
   return (
     <>
@@ -128,7 +131,7 @@ const MyOrders = ({ route }) => {
 
               {order ? (
                 <View style={styles.orderDetails}>
-                 
+
                   <View style={styles.textContainer}>
                     <Text style={styles.sectionHeader}>Order Details</Text>
                     <Text>Design: {order.item?.name}</Text>
@@ -156,13 +159,22 @@ const MyOrders = ({ route }) => {
                 <Text style={styles.header}>Your Orders</Text>
                 {myOrder.length > 0 ? (
                   myOrder.map((item, index) => (
-                    <View key={index} style={styles.myOrderItem}>
-                      <Text style={styles.sectionHeader}>Order Details</Text>
-                      <Text>Design: {item.design}</Text>
-                      <Text>Price: {item.price}</Text>
-                      <Text>Date: {new Date(item?.createdAt).toLocaleString()}</Text>
+                    <View style={styles.orderDetails}>
+                      <View key={index} style={styles.textContainer}>
+                        <Text style={styles.sectionHeader}>Order Details</Text>
+                        <Text>Design: {item.design}</Text>
+                        <Text>Price: {item.price}</Text>
+                        <Text>Date: {new Date(item?.createdAt).toLocaleString()}</Text>
+                      </View>
+                      <View style={styles.imageContainer}>
+                        <Image
+                          source={{ uri:  item?.image }}
+                          style={styles.image}
+                        />
+                      </View>
                     </View>
                   ))
+
                 ) : (
                   <Text>No order history found.</Text>
                 )}
@@ -209,7 +221,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
-    marginLeft:25,
+    marginLeft: 25,
     alignItems: 'flex-end', // Align the image to the right side
   },
   textContainer: {
