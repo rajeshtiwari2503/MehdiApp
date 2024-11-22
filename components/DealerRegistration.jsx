@@ -252,6 +252,53 @@ export default function DealerRegistrationForm({ response }) {
                     />
                     {errors.contactPerson && <Text style={styles.errorText}>{errors.contactPerson.message}</Text>}
                 </View> */}
+                 {/* Pincode Field */}
+            <View style={styles.inputContainer}>
+                <Text style={styles.label}>Pincode</Text>
+                <Controller
+                    control={control}
+                    name="pincode"
+                    rules={{
+                        required: 'Pincode is required',
+                        pattern: { value: /^[1-9][0-9]{5}$/, message: 'Invalid Pincode' },
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            style={[styles.input, errors.pincode && styles.errorInput]}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            placeholder="Pincode"
+                            keyboardType="numeric"
+                        />
+                    )}
+                />
+                {errors.pincode && <Text style={styles.errorText}>{errors.pincode.message}</Text>}
+            </View>
+
+            {/* Aadhaar Number Field */}
+            <View style={styles.inputContainer}>
+                <Text style={styles.label}>Aadhaar Number</Text>
+                <Controller
+                    control={control}
+                    name="aadharNo"
+                    rules={{
+                        required: 'Aadhaar Number is required',
+                        pattern: { value: /^\d{12}$/, message: 'Invalid Aadhaar Number' },
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            style={[styles.input, errors.aadharNo && styles.errorInput]}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            placeholder="Aadhaar Number"
+                            keyboardType="numeric"
+                        />
+                    )}
+                />
+                {errors.aadharNo && <Text style={styles.errorText}>{errors.aadharNo.message}</Text>}
+            </View>
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Upload Aadhaar Image</Text>
                 <TouchableOpacity onPress={selectAadharImage} style={styles.imageUploadButton}>
