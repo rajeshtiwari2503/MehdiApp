@@ -7,20 +7,25 @@ const Knowledge = () => {
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <Text style={styles.header}>Knowledge Page</Text>
         <View style={styles.card}>
-          <Text style={styles.subHeader}>Welcome to Lybley India Pvt. Ltd. Knowledge Hub</Text>
+          <Text style={styles.subHeader}> Welcome to SMehndi.com Knowledge Hub</Text>
           <Text style={styles.text}>
-            Lybley India Pvt. Ltd. is committed to delivering exceptional services and innovative solutions to meet the diverse needs of our customers. Our expertise spans across various domains, including technology, customer support, and after-sales services.
+          At SMehndi.com, we are dedicated to bringing you the best insights and
+                                knowledge about Mehndi art, traditions, and techniques. Explore our
+                                hub to learn more about this timeless craft and enhance your skills
+                                with our expert tips and resources.
           </Text>
           <Text style={styles.sectionHeader}>Our Expertise</Text>
           <View style={styles.list}>
-            <Text style={styles.listItem}>• Comprehensive after-sales service management</Text>
-            <Text style={styles.listItem}>• Advanced technical support solutions</Text>
-            <Text style={styles.listItem}>• Customer relationship management</Text>
-            <Text style={styles.listItem}>• Innovative product solutions and support</Text>
+            <Text style={styles.listItem}>• Comprehensive guides to Mehndi designs</Text>
+            <Text style={styles.listItem}>• Traditional and modern Mehndi techniques</Text>
+            <Text style={styles.listItem}>• Insights into Mehndi culture and history</Text>
+            <Text style={styles.listItem}>• Tips for perfecting your Mehndi art</Text>
           </View>
           <Text style={styles.sectionHeader}>Latest Articles and Insights</Text>
           <Text style={styles.text}>
-            Stay updated with the latest trends, insights, and articles from our team of experts. Our knowledge hub provides valuable information to help you stay ahead in the industry.
+          Discover the latest trends, articles, and tips from our Mehndi
+                                experts. Stay inspired and elevate your Mehndi artistry with curated
+                                content just for you.
           </Text>
           <View style={styles.list}>
             <TouchableOpacity onPress={() => {}}>
@@ -36,11 +41,7 @@ const Knowledge = () => {
               <Text style={styles.link}>Innovative Solutions for Customer Relationship Management</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.sectionHeader}>Contact Our Experts</Text>
-          <Text style={styles.text}>
-            Have questions or need assistance? Our team of experts is here to help. 
-            <Text style={styles.link} onPress={() => {}}> Contact us</Text> for more information.
-          </Text>
+         
         </View>
       </ScrollView>
     </View>
