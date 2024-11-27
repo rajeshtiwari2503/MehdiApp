@@ -4,6 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import http_request from '../http_request';
 import DesignSection from './Designs';
 import { Modal } from 'react-native';
+import RazorpayCheckout from 'react-native-razorpay';
+import axios from 'axios';
+ 
 
 
 const MyOrders = ({ route }) => {
@@ -49,41 +52,219 @@ const MyOrders = ({ route }) => {
     }
   };
 
+  // const handleCreateOrder1 = async () => {
+  //   if (!order || !user) {
+  //     Alert.alert("Error", "Order or user details are missing.");
+  //     return;
+  //   }
+
+  //   const orderData = {
+  //     name: user?.user?.name,
+  //     customerId: user?.user?._id,
+  //     email: user?.user?.email,
+  //     contact: user?.user?.contact,
+  //     address: user?.user?.address,
+  //     agentName: "Agent Name Here",
+  //     agentId: "Agent ID Here",
+  //     design: order?.item?.name,
+  //     designId: order?.item?._id,
+  //     image: order?.item?.image,
+  //     price: order?.item?.price,
+  //   };
+
+  //   try {
+  //     setLoading(true);
+  //     await http_request.post('/addOrder', orderData);
+
+  //     await AsyncStorage.removeItem("orderM");
+  //     setRefresh(Math.random());
+  //     setOrder(null);
+  //     setIsOrderCreated(true);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     setLoading(false);
+  //     Alert.alert("Error", "Error creating order.");
+  //   }
+  // };
+ 
+  
   const handleCreateOrder = async () => {
-    if (!order || !user) {
-      Alert.alert("Error", "Order or user details are missing.");
-      return;
-    }
-
-    const orderData = {
-      name: user?.user?.name,
-      customerId: user?.user?._id,
-      email: user?.user?.email,
-      contact: user?.user?.contact,
-      address: user?.user?.address,
-      agentName: "Agent Name Here",
-      agentId: "Agent ID Here",
-      design: order?.item?.name,
-      designId: order?.item?._id,
-      image: order?.item?.image,
-      price: order?.item?.price,
-    };
-
     try {
-      setLoading(true);
-      await http_request.post('/addOrder', orderData);
-
-      await AsyncStorage.removeItem("orderM");
-      setRefresh(Math.random());
-      setOrder(null);
-      setIsOrderCreated(true);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      Alert.alert("Error", "Error creating order.");
+      if (!order || !user) {
+        Alert.alert('Error', 'Order or user details are missing.');
+        return;
+      }
+  
+      const orderData = {
+        name: user?.user?.name,
+        customerId: user?.user?._id,
+        email: user?.user?.email,
+        contact: user?.user?.contact,
+        address: user?.user?.address,
+        agentName: 'Agent Name Here',
+        agentId: 'Agent ID Here',
+        design: order?.item?.name,
+        designId: order?.item?._id,
+        image: order?.item?.image,
+        price: order?.item?.price,
+      };
+  
+      const amount = order?.item?.groupOrder === true ? 500 : +order?.item?.price;
+      const resDatapay = {
+        ...orderData,
+        amount,
+        currency: 'INR',
+      };
+  
+      // Backend call to create the order
+      const response = await http_request.post('/addOrder', resDatapay); // Use your local server's IP and port
+      const { data } = response;
+  
+      const options = {
+        key: 'rzp_test_RZvXA4bkG4UQnJ', // Replace with your Razorpay Key ID
+        amount: amount * 100, // Convert to paise
+        currency: 'INR',
+        name: 'SMEHNDI',
+        description: 'Payment for order',
+        order_id: data.razorpayOrderId, // Order ID from backend
+        prefill: {
+          name: user?.user?.name,
+          email: user?.user?.email,
+          contact: user?.user?.contact,
+        },
+        theme: {
+          color: '#3399cc',
+        },
+      };
+  
+      // Razorpay checkout
+      RazorpayCheckout.open(options)
+        .then(async (orderDetails) => {
+          console.log(orderDetails, 'orderDetails');
+  
+          const refOrder = {
+            razorpayPaymentId: orderDetails.razorpay_payment_id,
+            razorpayOrderId: orderDetails.razorpay_order_id,
+            razorpaySignature: orderDetails.razorpay_signature,
+          };
+  
+          // Verify payment on the backend
+          const verifyResponse = await axios.post(
+            'https://mehdiappbackend.onrender.com/verify-payment',
+            refOrder
+          );
+          const { data } = verifyResponse;
+  
+          if (data?.status === true) {
+            Alert.alert('Success', 'Payment verified successfully.');
+          } else {
+            Alert.alert('Error', 'Payment verification failed.');
+          }
+        })
+        .catch((error) => {
+          console.log('Payment failed:', error);
+          Alert.alert('Error', 'Payment failed. Please try again.');
+        });
+    } catch (err) {
+      console.error('Error in handleCreateOrder:', err);
+      Alert.alert('Error', 'An error occurred while creating the order.');
     }
   };
-
+  
+  // const handleCreateOrder1 = async ( ) => {
+  //   try {
+  //     if (!order || !user) {
+  //       Alert.alert("Error", "Order or user details are missing.");
+  //       return;
+  //     }
+  
+  //     const orderData = {
+  //       name: user?.user?.name,
+  //       customerId: user?.user?._id,
+  //       email: user?.user?.email,
+  //       contact: user?.user?.contact,
+  //       address: user?.user?.address,
+  //       agentName: "",
+  //       agentId: "",
+  //       design: order?.item?.name,
+  //       designId: order?.item?._id,
+  //       image: order?.item?.image,
+  //       price: order?.item?.price,
+  //     };
+  
+  //     const amount = order?.item?.groupOrder === true ? 500 : +order?.item?.price;
+  //     const resDatapay = {
+  //       ...orderData,
+  //       amount,
+  //       currency: "INR",
+  //     };
+  
+  //     console.log(resDatapay);
+  
+  //     // Backend call to create the order
+  //     const response = await http_request.post("/addOrder", resDatapay);
+  //     const { data } = response;
+  
+  //     if (!data?.razorpayOrderId) {
+  //       console.error("Order creation failed. Missing razorpayOrderId in response.");
+  //       Alert.alert("Error", "Failed to create order. Please try again.");
+  //       return;
+  //     }
+  
+  //     const options = {
+  //       key: "rzp_test_RZvXA4bkG4UQnJ", // Replace with actual key
+  //       amount: amount * 100, // Amount in paise
+  //       currency: "INR",
+  //       name: "SMEHNDI",
+  //       description: "Payment for order",
+  //       image: "/Logo.png",
+  //       order_id: data.razorpayOrderId, // Pass the razorpayOrderId from the backend
+  //       handler: async (orderDetails) => {
+  //         const refOrder = {
+  //           razorpayPaymentId: orderDetails.razorpay_payment_id,
+  //           razorpayOrderId: orderDetails.razorpay_order_id,
+  //           razorpaySignature: orderDetails.razorpay_signature,
+  //         };
+  
+  //         try {
+  //           const verifyResponse = await axios.post(
+  //             "https://mehdiappbackend.onrender.com/verify-payment",
+  //             refOrder
+  //           );
+  
+  //           const { data } = verifyResponse;
+  //           if (data?.status === true) {
+  //             console.log("Payment verified successfully!");
+  //             // Handle successful payment logic
+  //           } else {
+  //             Alert.alert("Error", "Payment verification failed.");
+  //           }
+  //         } catch (err) {
+  //           console.error("Payment verification error:", err);
+  //           Alert.alert("Error", "Payment verification failed.");
+  //         }
+  //       },
+  //       prefill: {
+  //         name: user?.user?.name,
+  //         email: user?.user?.email,
+  //         contact: user?.user?.contact,
+  //       },
+  //       notes: {
+  //         address: "Razorpay Corporate Office",
+  //       },
+  //       theme: {
+  //         color: "#3399cc",
+  //       },
+  //     };
+  
+  //     const rzp1 = new window.Razorpay(options);
+  //     rzp1.open();
+  //   } catch (err) {
+  //     console.error("Error in handleCreateOrder:", err);
+  //     Alert.alert("Error", "An error occurred while creating the order.");
+  //   }
+  // };
+  
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(() => {
@@ -123,7 +304,9 @@ const MyOrders = ({ route }) => {
                       <View style={styles.textContainer}>
                         <Text style={styles.sectionHeader}>Order Details</Text>
                         <Text>Design: {item.design}</Text>
+                        <Text>Price: {item.status}</Text>
                         <Text>Price: {item.price}</Text>
+                        
                         <Text>Date: {new Date(item?.createdAt).toLocaleString()}</Text>
                       </View>
                       <View style={styles.imageContainer}>
@@ -209,6 +392,7 @@ const MyOrders = ({ route }) => {
                             <View style={styles.textContainer}>
                               <Text style={styles.sectionHeader}>Order Details</Text>
                               <Text>Design: {item.design}</Text>
+                              <Text>Price: {item.status}</Text>
                               <Text>Price: {item.price}</Text>
                               <Text>Date: {new Date(item?.createdAt).toLocaleString()}</Text>
                             </View>

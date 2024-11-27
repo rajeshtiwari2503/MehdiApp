@@ -227,7 +227,27 @@ export default function UserRegistrationForm({response}) {
                     {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword.message}</Text>}
                 </View>
 
-              
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label}>Referral Code</Text>
+                    <Controller
+                        control={control}
+                        name="referralCode"
+                        // rules={{
+                        //     required: 'Name is required',
+                        //     minLength: { value: 3, message: 'Name must be at least 3 characters long' }
+                        // }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <TextInput
+                                style={[styles.input, errors.referralCode && styles.errorInput]}
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={value}
+                                placeholder="referralCode"
+                            />
+                        )}
+                    />
+                     
+                </View>
                 <Controller
                     control={control}
                     name="acceptedTerms"
