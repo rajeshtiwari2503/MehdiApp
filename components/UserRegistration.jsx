@@ -6,7 +6,7 @@ import { Colors } from '@/constants/Colors';
 import Toast from 'react-native-toast-message';
 import { Checkbox } from 'react-native-paper';
 import http_request from "../http_request";
- 
+import AsyncStorage from '@react-native-async-storage/async-storage';
  
 import * as Location from 'expo-location';
 
@@ -32,9 +32,10 @@ export default function UserRegistrationForm({response}) {
             let { data } = response;
      
             setLoading(false);
-
+            
+            await AsyncStorage.setItem('user', JSON.stringify(data));
             Toast.show({ type: 'success', text: data?.msg });
-            router.push("auth/sign-in");
+            router.push("home");
         } catch (err) {
             setLoading(false);
             Toast.show({ type: 'error', text: err?.response?.data?.msg });
@@ -227,7 +228,27 @@ export default function UserRegistrationForm({response}) {
                     {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword.message}</Text>}
                 </View>
 
-              
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label}>Referral Code</Text>
+                    <Controller
+                        control={control}
+                        name="referralCode"
+                        // rules={{
+                        //     required: 'Name is required',
+                        //     minLength: { value: 3, message: 'Name must be at least 3 characters long' }
+                        // }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <TextInput
+                                style={[styles.input, errors.referralCode && styles.errorInput]}
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={value}
+                                placeholder="referralCode"
+                            />
+                        )}
+                    />
+                     
+                </View>
                 <Controller
                     control={control}
                     name="acceptedTerms"

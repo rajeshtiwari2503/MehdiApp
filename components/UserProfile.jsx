@@ -50,6 +50,18 @@ export default function UserProfile(props) {
           <Icon name="verified" size={24} color="#3F51B5" />
           <Text style={styles.infoText}>{user?.acceptedTerms?"Term & Condition   Accepted":"Term & Condition not Accepted"}</Text>
         </View>
+        <View style={styles.infoBox}>
+          <Icon name="code" size={24} color="#3F51B5" />
+          <Text style={styles.infoText}>Referal Code : {user?.referralCode}</Text>
+        </View>
+        <View style={styles.infoBox}>
+          <Icon name="person" size={24} color="#3F51B5" />
+          <Text style={styles.infoText}>Referred By  : {user?.referredBy}</Text>
+        </View>
+        <View style={styles.infoBox}>
+          <Icon name="group" size={24} color="#3F51B5" />
+          <Text style={styles.infoText}>Referal Count: {user?.referralCount}</Text>
+        </View>
       </View>
       <View style={styles.container}>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
@@ -112,7 +124,7 @@ const styles = StyleSheet.create({
   },
   profileContainer: {
     alignItems: 'center',
-    marginVertical: 24,
+    marginVertical: 16,
   },
   profileImage: {
     width: 100,
@@ -147,12 +159,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   infoContainer: {
-    marginHorizontal: 16,
+    marginHorizontal: 10,
   },
   infoBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 8,
+    marginVertical: 7,
   },
   infoText: {
     fontSize: 16,

@@ -35,8 +35,8 @@ const Contact = () => {
                             </View>
                             <View style={styles.infoTextContainer}>
                                 <Text style={styles.infoTitle}>Technical support</Text>
-                                <Text style={styles.infoText}>support@example.com</Text>
-                                <Text style={styles.infoText}>+1 234-567-89</Text>
+                                <Text style={styles.infoText}> smehndi986@gmail.com</Text>
+                                <Text style={styles.infoText}> +91 9565892772</Text>
                             </View>
                         </View>
                         <View style={styles.infoCard}>
@@ -46,8 +46,8 @@ const Contact = () => {
                             </View>
                             <View style={styles.infoTextContainer}>
                                 <Text style={styles.infoTitle}>Sales questions</Text>
-                                <Text style={styles.infoText}>sales@example.com</Text>
-                                <Text style={styles.infoText}>+1 234-567-89</Text>
+                                <Text style={styles.infoText}> smehndi986@gmail.com</Text>
+                                <Text style={styles.infoText}>+91 9219252400</Text>
                             </View>
                         </View>
                         <View style={styles.infoCard}>
@@ -57,8 +57,8 @@ const Contact = () => {
                             </View>
                             <View style={styles.infoTextContainer}>
                                 <Text style={styles.infoTitle}>Press</Text>
-                                <Text style={styles.infoText}>press@example.com</Text>
-                                <Text style={styles.infoText}>+1 234-567-89</Text>
+                                <Text style={styles.infoText}> smehndi986@gmail.com</Text>
+                                <Text style={styles.infoText}>+91 9219252400</Text>
                             </View>
                         </View>
                         <View style={styles.infoCard}>
@@ -68,8 +68,8 @@ const Contact = () => {
                             </View>
                             <View style={styles.infoTextContainer}>
                                 <Text style={styles.infoTitle}>Bug report</Text>
-                                <Text style={styles.infoText}>bugs@example.com</Text>
-                                <Text style={styles.infoText}>+1 234-567-89</Text>
+                                <Text style={styles.infoText}> smehndi986@gmail.com</Text>
+                                <Text style={styles.infoText}>+91 9219252400</Text>
                             </View>
                         </View>
                     </View>

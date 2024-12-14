@@ -8,7 +8,7 @@ import http_request from "../http_request";
 import { Checkbox } from 'react-native-paper';
 import { Colors } from '@/constants/Colors';
 import axios from 'axios';
- 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DealerRegistrationForm({ response }) {
     const router = useRouter();
@@ -82,8 +82,10 @@ export default function DealerRegistrationForm({ response }) {
             setLoading(false);
             console.log("Server Response:", response.data);
             // Uncomment if using a toast notification or navigation after success
+            await AsyncStorage.setItem('user', JSON.stringify(data));
+            
             Toast.show({ type: 'success', text1: response.data.msg });
-            // router.push("auth/sign-in");
+            router.push("home");
         } catch (error) {
             setLoading(false);
             console.log('Error occurred:', error);
@@ -252,6 +254,53 @@ export default function DealerRegistrationForm({ response }) {
                     />
                     {errors.contactPerson && <Text style={styles.errorText}>{errors.contactPerson.message}</Text>}
                 </View> */}
+                 {/* Pincode Field */}
+            <View style={styles.inputContainer}>
+                <Text style={styles.label}>Pincode</Text>
+                <Controller
+                    control={control}
+                    name="pincode"
+                    rules={{
+                        required: 'Pincode is required',
+                        pattern: { value: /^[1-9][0-9]{5}$/, message: 'Invalid Pincode' },
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            style={[styles.input, errors.pincode && styles.errorInput]}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            placeholder="Pincode"
+                            keyboardType="numeric"
+                        />
+                    )}
+                />
+                {errors.pincode && <Text style={styles.errorText}>{errors.pincode.message}</Text>}
+            </View>
+
+            {/* Aadhaar Number Field */}
+            <View style={styles.inputContainer}>
+                <Text style={styles.label}>Aadhaar Number</Text>
+                <Controller
+                    control={control}
+                    name="aadharNo"
+                    rules={{
+                        required: 'Aadhaar Number is required',
+                        pattern: { value: /^\d{12}$/, message: 'Invalid Aadhaar Number' },
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            style={[styles.input, errors.aadharNo && styles.errorInput]}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            placeholder="Aadhaar Number"
+                            keyboardType="numeric"
+                        />
+                    )}
+                />
+                {errors.aadharNo && <Text style={styles.errorText}>{errors.aadharNo.message}</Text>}
+            </View>
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Upload Aadhaar Image</Text>
                 <TouchableOpacity onPress={selectAadharImage} style={styles.imageUploadButton}>
@@ -306,7 +355,27 @@ export default function DealerRegistrationForm({ response }) {
                 />
                 {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword.message}</Text>}
             </View>
-
+            <View style={styles.inputContainer}>
+                    <Text style={styles.label}>Referral Code</Text>
+                    <Controller
+                        control={control}
+                        name="referralCode"
+                        // rules={{
+                        //     required: 'Name is required',
+                        //     minLength: { value: 3, message: 'Name must be at least 3 characters long' }
+                        // }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <TextInput
+                                style={[styles.input, errors.referralCode && styles.errorInput]}
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={value}
+                                placeholder="referralCode"
+                            />
+                        )}
+                    />
+                     
+                </View>
 
             <Controller
                 control={control}

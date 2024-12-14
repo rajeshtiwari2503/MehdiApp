@@ -72,6 +72,7 @@ const GroupOrderDesign = ({ designsData }) => {
         const userData = JSON.parse(storedUser);
         setUser(userData);
         setValue('name', userData?.user?.name || '');
+        setValue('email', userData?.user?.email || '');
         setValue('customerId', userData?.user?._id || '');
         setValue('contact', userData?.user?.contact || '');
         setValue('address', userData?.user?.address || '');
@@ -147,12 +148,13 @@ const navigation=useNavigation()
       }
   
       
-  
+  const noOfPeople=data1?.numberOfPeople
       // Prepare order data
       const orderData = {
-        ...data1, // Form data
+        ...data1, noOfPeople
        
       };
+  // console.log(orderData);
   
       setLoading(true);
   
