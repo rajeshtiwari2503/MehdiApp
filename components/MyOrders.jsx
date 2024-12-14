@@ -4,9 +4,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import http_request from '../http_request';
 import DesignSection from './Designs';
 import { Modal } from 'react-native';
-import RazorpayCheckout from 'react-native-razorpay';
-import axios from 'axios';
  
+import axios from 'axios';
+import RazorpayCheckout from 'react-native-razorpay';
+
+
 
 
 const MyOrders = ({ route }) => {
@@ -52,42 +54,9 @@ const MyOrders = ({ route }) => {
     }
   };
 
-  // const handleCreateOrder1 = async () => {
-  //   if (!order || !user) {
-  //     Alert.alert("Error", "Order or user details are missing.");
-  //     return;
-  //   }
+   
 
-  //   const orderData = {
-  //     name: user?.user?.name,
-  //     customerId: user?.user?._id,
-  //     email: user?.user?.email,
-  //     contact: user?.user?.contact,
-  //     address: user?.user?.address,
-  //     agentName: "Agent Name Here",
-  //     agentId: "Agent ID Here",
-  //     design: order?.item?.name,
-  //     designId: order?.item?._id,
-  //     image: order?.item?.image,
-  //     price: order?.item?.price,
-  //   };
 
-  //   try {
-  //     setLoading(true);
-  //     await http_request.post('/addOrder', orderData);
-
-  //     await AsyncStorage.removeItem("orderM");
-  //     setRefresh(Math.random());
-  //     setOrder(null);
-  //     setIsOrderCreated(true);
-  //     setLoading(false);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     Alert.alert("Error", "Error creating order.");
-  //   }
-  // };
- 
-  
   const handleCreateOrder = async () => {
     try {
       if (!order || !user) {
@@ -109,38 +78,40 @@ const MyOrders = ({ route }) => {
         price: order?.item?.price,
       };
   
-      const amount = order?.item?.groupOrder === true ? 500 : +order?.item?.price;
-      const resDatapay = {
-        ...orderData,
-        amount,
-        currency: 'INR',
-      };
+      const amount = (order?.item?.groupOrder === true ? 500 : 50) * 100; // Convert to paise
+      const resDatapay = { ...orderData, amount, currency: 'INR' };
   
       // Backend call to create the order
-      const response = await http_request.post('/addOrder', resDatapay); // Use your local server's IP and port
+      const response = await http_request.post('/addOrder', resDatapay);
       const { data } = response;
   
+      console.log('Backend response data:', data);
+  
+      if (!data?.razorpayOrderId) {
+        Alert.alert('Error', 'Invalid Razorpay Order ID.');
+        return;
+      }
+  
       const options = {
-        key: 'rzp_test_RZvXA4bkG4UQnJ', // Replace with your Razorpay Key ID
-        amount: amount * 100, // Convert to paise
+        key: 'rzp_test_RZvXA4bkG4UQnJ',
+        amount: amount,
         currency: 'INR',
-        name: 'SMEHNDI',
+        name: 'S MEHNDI',
         description: 'Payment for order',
-        order_id: data.razorpayOrderId, // Order ID from backend
+        order_id: data.razorpayOrderId,
         prefill: {
-          name: user?.user?.name,
-          email: user?.user?.email,
-          contact: user?.user?.contact,
+          name: user?.user?.name || 'Default Name',
+          email: user?.user?.email || 'default@example.com',
+          contact: user?.user?.contact || '9999999999',
         },
-        theme: {
-          color: '#3399cc',
-        },
+        theme: { color: '#3399cc' },
       };
   
-      // Razorpay checkout
+      console.log('Razorpay options:', options);
+  
       RazorpayCheckout.open(options)
         .then(async (orderDetails) => {
-          console.log(orderDetails, 'orderDetails');
+          console.log('Payment successful:', orderDetails);
   
           const refOrder = {
             razorpayPaymentId: orderDetails.razorpay_payment_id,
@@ -148,22 +119,16 @@ const MyOrders = ({ route }) => {
             razorpaySignature: orderDetails.razorpay_signature,
           };
   
-          // Verify payment on the backend
           const verifyResponse = await axios.post(
             'https://mehdiappbackend.onrender.com/verify-payment',
             refOrder
           );
-          const { data } = verifyResponse;
   
-          if (data?.status === true) {
-            Alert.alert('Success', 'Payment verified successfully.');
-          } else {
-            Alert.alert('Error', 'Payment verification failed.');
-          }
+          // Add success alert or further processing here
         })
         .catch((error) => {
-          console.log('Payment failed:', error);
-          Alert.alert('Error', 'Payment failed. Please try again.');
+          console.error('Razorpay Error:', error);
+          Alert.alert('Error', `Payment failed: ${error.description || error.code}`);
         });
     } catch (err) {
       console.error('Error in handleCreateOrder:', err);
@@ -171,100 +136,8 @@ const MyOrders = ({ route }) => {
     }
   };
   
-  // const handleCreateOrder1 = async ( ) => {
-  //   try {
-  //     if (!order || !user) {
-  //       Alert.alert("Error", "Order or user details are missing.");
-  //       return;
-  //     }
-  
-  //     const orderData = {
-  //       name: user?.user?.name,
-  //       customerId: user?.user?._id,
-  //       email: user?.user?.email,
-  //       contact: user?.user?.contact,
-  //       address: user?.user?.address,
-  //       agentName: "",
-  //       agentId: "",
-  //       design: order?.item?.name,
-  //       designId: order?.item?._id,
-  //       image: order?.item?.image,
-  //       price: order?.item?.price,
-  //     };
-  
-  //     const amount = order?.item?.groupOrder === true ? 500 : +order?.item?.price;
-  //     const resDatapay = {
-  //       ...orderData,
-  //       amount,
-  //       currency: "INR",
-  //     };
-  
-  //     console.log(resDatapay);
-  
-  //     // Backend call to create the order
-  //     const response = await http_request.post("/addOrder", resDatapay);
-  //     const { data } = response;
-  
-  //     if (!data?.razorpayOrderId) {
-  //       console.error("Order creation failed. Missing razorpayOrderId in response.");
-  //       Alert.alert("Error", "Failed to create order. Please try again.");
-  //       return;
-  //     }
-  
-  //     const options = {
-  //       key: "rzp_test_RZvXA4bkG4UQnJ", // Replace with actual key
-  //       amount: amount * 100, // Amount in paise
-  //       currency: "INR",
-  //       name: "SMEHNDI",
-  //       description: "Payment for order",
-  //       image: "/Logo.png",
-  //       order_id: data.razorpayOrderId, // Pass the razorpayOrderId from the backend
-  //       handler: async (orderDetails) => {
-  //         const refOrder = {
-  //           razorpayPaymentId: orderDetails.razorpay_payment_id,
-  //           razorpayOrderId: orderDetails.razorpay_order_id,
-  //           razorpaySignature: orderDetails.razorpay_signature,
-  //         };
-  
-  //         try {
-  //           const verifyResponse = await axios.post(
-  //             "https://mehdiappbackend.onrender.com/verify-payment",
-  //             refOrder
-  //           );
-  
-  //           const { data } = verifyResponse;
-  //           if (data?.status === true) {
-  //             console.log("Payment verified successfully!");
-  //             // Handle successful payment logic
-  //           } else {
-  //             Alert.alert("Error", "Payment verification failed.");
-  //           }
-  //         } catch (err) {
-  //           console.error("Payment verification error:", err);
-  //           Alert.alert("Error", "Payment verification failed.");
-  //         }
-  //       },
-  //       prefill: {
-  //         name: user?.user?.name,
-  //         email: user?.user?.email,
-  //         contact: user?.user?.contact,
-  //       },
-  //       notes: {
-  //         address: "Razorpay Corporate Office",
-  //       },
-  //       theme: {
-  //         color: "#3399cc",
-  //       },
-  //     };
-  
-  //     const rzp1 = new window.Razorpay(options);
-  //     rzp1.open();
-  //   } catch (err) {
-  //     console.error("Error in handleCreateOrder:", err);
-  //     Alert.alert("Error", "An error occurred while creating the order.");
-  //   }
-  // };
-  
+
+
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(() => {
@@ -306,7 +179,7 @@ const MyOrders = ({ route }) => {
                         <Text>Design: {item.design}</Text>
                         <Text>Price: {item.status}</Text>
                         <Text>Price: {item.price}</Text>
-                        
+
                         <Text>Date: {new Date(item?.createdAt).toLocaleString()}</Text>
                       </View>
                       <View style={styles.imageContainer}>
@@ -364,13 +237,21 @@ const MyOrders = ({ route }) => {
                           <Text style={styles.sectionHeader}>Order Details</Text>
                           <Text>Design: {order.item?.name}</Text>
                           <Text>Price: {order.item?.price}</Text>
-                          {!isOrderCreated ? (
-                            <TouchableOpacity style={styles.customButton} onPress={handleCreateOrder}>
+                          <TouchableOpacity
+                            style={[
+                              styles.customButton,
+                              loading && { backgroundColor: 'gray' }, // Disable style
+                            ]}
+                            onPress={()=>handleCreateOrder()}
+                            disabled={loading} // Disable button during loading
+                          >
+                            {loading ? (
+                              <ActivityIndicator color="#fff" /> // Show spinner
+                            ) : (
                               <Text style={styles.buttonText}>Create Order</Text>
-                            </TouchableOpacity>
-                          ) : (
-                            <Text style={styles.successText}>Order successfully created!</Text>
-                          )}
+                            )}
+                          </TouchableOpacity>
+
                         </View>
                         <View style={styles.imageContainer}>
                           <Image
@@ -378,6 +259,7 @@ const MyOrders = ({ route }) => {
                             style={styles.image}
                           />
                         </View>
+
                       </View>
                     ) : (
                       <Text> </Text>
@@ -388,22 +270,22 @@ const MyOrders = ({ route }) => {
                       {myOrder.length > 0 ? (
                         myOrder.map((item, index) => (
                           <TouchableOpacity key={item._id || index} onPress={() => handleOrderClick(item)}>
-                          <View style={styles.orderDetails} >
-                            <View style={styles.textContainer}>
-                              <Text style={styles.sectionHeader}>Order Details</Text>
-                              <Text>Design: {item.design}</Text>
-                              <Text>Price: {item.status}</Text>
-                              <Text>Price: {item.price}</Text>
-                              <Text>Date: {new Date(item?.createdAt).toLocaleString()}</Text>
+                            <View style={styles.orderDetails} >
+                              <View style={styles.textContainer}>
+                                <Text style={styles.sectionHeader}>Order Details</Text>
+                                <Text>Design: {item.design}</Text>
+                                <Text>Price: {item.status}</Text>
+                                <Text>Price: {item.price}</Text>
+                                <Text>Date: {new Date(item?.createdAt).toLocaleString()}</Text>
+                              </View>
+                              <View style={styles.imageContainer}>
+                                <Image
+                                  source={{ uri: item?.image }}
+                                  style={styles.image}
+                                />
+                              </View>
                             </View>
-                            <View style={styles.imageContainer}>
-                              <Image
-                                source={{ uri: item?.image }}
-                                style={styles.image}
-                              />
-                            </View>
-                          </View>
-                        </TouchableOpacity>
+                          </TouchableOpacity>
                         ))
 
                       ) : (
@@ -417,95 +299,95 @@ const MyOrders = ({ route }) => {
           </>
       }
       <Modal
-  visible={modalVisible}
-  transparent={true}
-  animationType="slide"
-  onRequestClose={() => setModalVisible(false)}
->
-<TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-  <View style={styles.modalOverlay}>
-    <View style={styles.modalContent}>
-      <Text style={styles.modalHeader}>Order Details</Text>
-      {selectedOrder && (
-        <>
-          <View style={styles.row}>
-            <Text style={styles.label}>Name:</Text>
-            <Text style={styles.value}>{selectedOrder.name}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Email:</Text>
-            <Text style={styles.value}>{selectedOrder.email}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Contact:</Text>
-            <Text style={styles.value}>{selectedOrder.contact}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Address:</Text>
-            <Text style={styles.value}>{selectedOrder.address}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Design:</Text>
-            <Text style={styles.value}>{selectedOrder.design}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Price:</Text>
-            <Text style={styles.value}>{selectedOrder.price}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Order Status:</Text>
-            <Text style={styles.value}>{selectedOrder.order}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Group Order:</Text>
-            <Text style={styles.value}>{selectedOrder.groupOrder===true?"YES":"NO"}</Text>
-          </View>
-         {selectedOrder.groupOrder===true?
-         <>
-          <View style={styles.row}>
-            <Text style={styles.label}>Number Of People:</Text>
-            <Text style={styles.value}>{selectedOrder.noOfPeople}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Selected Date:</Text>
-            <Text style={styles.value}>{new Date(selectedOrder.selectedDate).toLocaleDateString()}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Selected Time:</Text>
-            <Text style={styles.value}>{new Date(selectedOrder.selectedTime).toLocaleTimeString()}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Bridal Mehndi:</Text>
-            <Text style={styles.value}>{selectedOrder.bridalMehndi}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Alternate contact:</Text>
-            <Text style={styles.value}>{selectedOrder.alternateNumber}</Text>
-          </View>
-          <Image
-            source={{ uri: selectedOrder.image }}
-            style={styles.modalImage}
-          />
-          </>
-          :""
-}
-          <View style={styles.row}>
-            <Text style={styles.label}>Created At:</Text>
-            <Text style={styles.value}>{new Date(selectedOrder.createdAt).toLocaleString()}</Text>
-          </View>
-         
-        </>
-      )}
-      <TouchableOpacity
-        style={styles.closeButton}
-        onPress={() => setModalVisible(false)}
+        visible={modalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
       >
-        <Text style={styles.closeButtonText}>Close</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-  </TouchableWithoutFeedback>
-</Modal>
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalHeader}>Order Details</Text>
+              {selectedOrder && (
+                <>
+                  <View style={styles.row}>
+                    <Text style={styles.label}>Name:</Text>
+                    <Text style={styles.value}>{selectedOrder.name}</Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Text style={styles.label}>Email:</Text>
+                    <Text style={styles.value}>{selectedOrder.email}</Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Text style={styles.label}>Contact:</Text>
+                    <Text style={styles.value}>{selectedOrder.contact}</Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Text style={styles.label}>Address:</Text>
+                    <Text style={styles.value}>{selectedOrder.address}</Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Text style={styles.label}>Design:</Text>
+                    <Text style={styles.value}>{selectedOrder.design}</Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Text style={styles.label}>Price:</Text>
+                    <Text style={styles.value}>{selectedOrder.price}</Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Text style={styles.label}>Order Status:</Text>
+                    <Text style={styles.value}>{selectedOrder.order}</Text>
+                  </View>
+                  <View style={styles.row}>
+                    <Text style={styles.label}>Group Order:</Text>
+                    <Text style={styles.value}>{selectedOrder.groupOrder === true ? "YES" : "NO"}</Text>
+                  </View>
+                  {selectedOrder.groupOrder === true ?
+                    <>
+                      <View style={styles.row}>
+                        <Text style={styles.label}>Number Of People:</Text>
+                        <Text style={styles.value}>{selectedOrder.noOfPeople}</Text>
+                      </View>
+                      <View style={styles.row}>
+                        <Text style={styles.label}>Selected Date:</Text>
+                        <Text style={styles.value}>{new Date(selectedOrder.selectedDate).toLocaleDateString()}</Text>
+                      </View>
+                      <View style={styles.row}>
+                        <Text style={styles.label}>Selected Time:</Text>
+                        <Text style={styles.value}>{new Date(selectedOrder.selectedTime).toLocaleTimeString()}</Text>
+                      </View>
+                      <View style={styles.row}>
+                        <Text style={styles.label}>Bridal Mehndi:</Text>
+                        <Text style={styles.value}>{selectedOrder.bridalMehndi}</Text>
+                      </View>
+                      <View style={styles.row}>
+                        <Text style={styles.label}>Alternate contact:</Text>
+                        <Text style={styles.value}>{selectedOrder.alternateNumber}</Text>
+                      </View>
+                      <Image
+                        source={{ uri: selectedOrder.image }}
+                        style={styles.modalImage}
+                      />
+                    </>
+                    : ""
+                  }
+                  <View style={styles.row}>
+                    <Text style={styles.label}>Created At:</Text>
+                    <Text style={styles.value}>{new Date(selectedOrder.createdAt).toLocaleString()}</Text>
+                  </View>
+
+                </>
+              )}
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
 
 
     </>
@@ -663,7 +545,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  
+
 });
 
 export default MyOrders;

@@ -8,7 +8,7 @@ import http_request from "../http_request";
 import { Checkbox } from 'react-native-paper';
 import { Colors } from '@/constants/Colors';
 import axios from 'axios';
- 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DealerRegistrationForm({ response }) {
     const router = useRouter();
@@ -82,8 +82,10 @@ export default function DealerRegistrationForm({ response }) {
             setLoading(false);
             console.log("Server Response:", response.data);
             // Uncomment if using a toast notification or navigation after success
+            await AsyncStorage.setItem('user', JSON.stringify(data));
+            
             Toast.show({ type: 'success', text1: response.data.msg });
-            router.push("auth/sign-in");
+            router.push("home");
         } catch (error) {
             setLoading(false);
             console.log('Error occurred:', error);
