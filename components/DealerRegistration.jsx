@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Image } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
-import * as ImagePicker from 'expo-image-picker';
+ 
 import http_request from "../http_request";
 import { Checkbox } from 'react-native-paper';
 import { Colors } from '@/constants/Colors';
@@ -22,24 +22,24 @@ export default function DealerRegistrationForm({ response }) {
         Register(repData);
     };
 
-    const selectAadharImage = async () => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!permissionResult.granted) {
-            alert("Permission to access camera roll is required!");
-            return;
-        }
     
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            quality: 1,
-        });
+    //     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    //     if (!permissionResult.granted) {
+    //         alert("Permission to access camera roll is required!");
+    //         return;
+    //     }
     
-        if (!result.canceled) {
-            console.log("Selected Image URI:", result.assets[0].uri);
-            setAadharImage(result.assets[0].uri); // Save only the URI to state
-        }
-    };
+    //     const result = await ImagePicker.launchImageLibraryAsync({
+    //         mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //         allowsEditing: true,
+    //         quality: 1,
+    //     });
+    
+    //     if (!result.canceled) {
+    //         console.log("Selected Image URI:", result.assets[0].uri);
+    //         setAadharImage(result.assets[0].uri); // Save only the URI to state
+    //     }
+    // };
     
     const Register = async (reqdata) => {
         try {
@@ -301,15 +301,7 @@ export default function DealerRegistrationForm({ response }) {
                 />
                 {errors.aadharNo && <Text style={styles.errorText}>{errors.aadharNo.message}</Text>}
             </View>
-            <View style={styles.inputContainer}>
-                <Text style={styles.label}>Upload Aadhaar Image</Text>
-                <TouchableOpacity onPress={selectAadharImage} style={styles.imageUploadButton}>
-                    <Text style={styles.imageUploadText}>Select Image</Text>
-                </TouchableOpacity>
-                {aadharImage && (
-                    <Image source={{ uri: aadharImage}} style={styles.previewImage} />
-                )}
-            </View>
+             
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Password</Text>
                 <Controller
