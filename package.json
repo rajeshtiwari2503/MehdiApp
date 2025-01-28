@@ -56,7 +56,8 @@
     "react-native-toast-message": "^2.2.0",
     "react-native-video": "^6.4.3",
     "react-native-web": "~0.19.10",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "expo-media-library": "~16.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
